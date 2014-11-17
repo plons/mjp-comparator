@@ -4,6 +4,7 @@
 #include "MJPEntry.hpp"
 
 #include <boost/filesystem/path.hpp>
+#include <map>
 #include <memory>
 
 auto convertFoxBeleidMJPLine = [](const std::string& line){return std::make_shared<FoxBeleidMJPEntry>(line);};
@@ -38,7 +39,7 @@ public:
 private:
 	void init(std::istream& input, const ConvertLineFunction& convert);
 
-	std::vector<std::shared_ptr<MJPEntry>> entries;
+	std::map<MJPEntryKey, std::shared_ptr<MJPEntry>> entries;
 };
 
 std::ostream& operator<<(std::ostream& ws, const MJPFile& file);

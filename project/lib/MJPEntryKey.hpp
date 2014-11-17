@@ -4,12 +4,13 @@
 #include <boost/operators.hpp>
 
 class MJPEntryKey :
-		public boost::equality_comparable<MJPEntryKey>
+		public boost::totally_ordered<MJPEntryKey>
 {
 public:
 	MJPEntryKey(const std::string& actie, const std::string& beleidsItem, const std::string& algemeneRekening, const std::string& investeringsEnveloppe, const std::string& kasStroom);
 
 	bool operator==(const MJPEntryKey& other) const;
+	bool operator<(const MJPEntryKey& other) const;
 
 	std::string actie;                 // (vb 0.3.0.0 of GBB-CBS),
 	std::string beleidsItem;           // (vb 0030-00)

@@ -9,6 +9,7 @@ using std::ifstream;
 using std::istream;
 using std::ostream;
 using std::string;
+using std::shared_ptr;
 
 MJPFile::MJPFile(const path& file, const ConvertLineFunction& convert)
 {
@@ -28,7 +29,7 @@ uint MJPFile::getNrEntries() const
 
 bool MJPFile::containsKey(const MJPEntryKey& key) const
 {
-	return false;
+	return entries.find(key) != entries.end();
 }
 
 void MJPFile::init(istream& input, const ConvertLineFunction& convert)
@@ -41,7 +42,15 @@ void MJPFile::init(istream& input, const ConvertLineFunction& convert)
 		}
 		else
 		{
-			entries.push_back(convert(line));
+			shared_ptr<MJPEntry> entry = convert(line);
+			if (containsKey(entry->getKey()))
+			{
+				entries[entry->getKey()]->updateAmounts(entry->getAmounts());
+			}
+			else
+			{
+				entries[entry->getKey()] = entry;
+			}
 		}
 	});
 }
@@ -50,8 +59,9 @@ void MJPFile::printOn(std::ostream& ws) const
 {
 	for (auto& entry : entries)
 	{
-		ws << entry->getKey() << " ";
-		std::copy(entry->getAmounts().begin(), entry->getAmounts().end(), std::ostream_iterator<double>(ws, " "));
+		auto amounts = entry.second->getAmounts();
+		ws << entry.first << " ";
+		std::copy(amounts.begin(), amounts.end(), std::ostream_iterator<double>(ws, " "));
 		ws << "\n";
 	}
 }

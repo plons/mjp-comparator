@@ -28,6 +28,17 @@ public:
 	std::unique_ptr<MJPFile> foxBeleidMJPFile;
 };
 
+TEST_F(FoxBeleidMJPExample, parsesExpectedNumberOfEntries)
+{
+	ASSERT_THAT(foxBeleidMJPFile->getNrEntries(), Eq(expectedNrEntries));
+}
+
+TEST_F(FoxBeleidMJPExample, canFindEntryByKey)
+{
+	std::cout << *foxBeleidMJPFile << std::endl;
+	ASSERT_TRUE(foxBeleidMJPFile->containsKey(MJPEntryKey("0.1.0.0", "0030-00", "902000", "IE-GEEN", "U")));
+}
+
 class CustomMJPExample : public Test
 {
 public:
@@ -47,20 +58,13 @@ public:
 	std::unique_ptr<MJPFile> customMJPFile;
 };
 
-
-
-TEST_F(FoxBeleidMJPExample, parsesExpectedNumberOfEntries)
-{
-	ASSERT_THAT(foxBeleidMJPFile->getNrEntries(), Eq(expectedNrEntries));
-}
-
-TEST_F(FoxBeleidMJPExample, canFindEntryByKey)
-{
-	//BP2014_2019-0/GBB-CBS/0040-00/6500000/BESTUUR/CBS/700/IE-GEEN/U;GBB-CBS;Gelijkblijvend beleid CBS;0040-00;Transacties in verband met de openbare schuld;6500000;IE-GEEN;Intresten op leningen;U;€ 344,119.60;€ 440,466.49;€ 491,708.03;€ 507,578.12;€ 532,510.77;€ 509,588.53;;;;;
-	ASSERT_TRUE(foxBeleidMJPFile->containsKey(MJPEntryKey("GBB-CBS", "0040-00", "6500000", "IE_GEEN", "U")));
-}
-
 TEST_F(CustomMJPExample, parsesExpectedNumberOfEntries)
 {
 	ASSERT_THAT(customMJPFile->getNrEntries(), Eq(expectedNrEntries));
 }
+
+TEST_F(CustomMJPExample, canFindEntryByKey)
+{
+	ASSERT_TRUE(customMJPFile->containsKey(MJPEntryKey("GBB-CBS", "0040-00", "6500000", "IE-GEEN", "U")));
+}
+

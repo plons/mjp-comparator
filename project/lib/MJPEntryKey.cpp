@@ -31,6 +31,16 @@ bool MJPEntryKey::operator==(const MJPEntryKey& other) const
 		&& kasStroom == other.kasStroom;
 }
 
+bool MJPEntryKey::operator<(const MJPEntryKey& other) const
+{
+	if (actie != other.actie) return actie < other.actie;
+	if (beleidsItem != other.beleidsItem) return beleidsItem < other.beleidsItem;
+	if (algemeneRekening != other.algemeneRekening) return algemeneRekening < other.algemeneRekening;
+	if (investeringsEnveloppe != other.investeringsEnveloppe) return investeringsEnveloppe < other.investeringsEnveloppe;
+	if (kasStroom != other.kasStroom) return kasStroom < other.kasStroom;
+	return false;
+}
+
 void MJPEntryKey::checkValues() const
 {
 	if (actie != "GBB-CBS" && !regex_match(actie, regex("\\d+\\.\\d+\\.\\d+\\.\\d+")))
