@@ -35,7 +35,6 @@ TEST_F(FoxBeleidMJPExample, parsesExpectedNumberOfEntries)
 
 TEST_F(FoxBeleidMJPExample, canFindEntryByKey)
 {
-	std::cout << *foxBeleidMJPFile << std::endl;
 	ASSERT_TRUE(foxBeleidMJPFile->containsKey(MJPEntryKey("0.1.0.0", "0030-00", "902000", "IE-GEEN", "U")));
 }
 

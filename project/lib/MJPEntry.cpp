@@ -32,7 +32,14 @@ static double parseAmount(string amountString)
 	boost::algorithm::replace_all(amountString, ",", "");
 	boost::algorithm::replace_all(amountString, " ", "");
 	if (amountString.empty()) return 0;
-	return boost::lexical_cast<double>(amountString);
+	try
+	{
+		return boost::lexical_cast<double>(amountString);
+	}
+	catch (const boost::bad_lexical_cast& e)
+	{
+		throw std::invalid_argument((format("Could not convert the amount '%s' to a double value.")%amountString).str());
+	}
 }
 
 MJPEntry::MJPEntry() {}

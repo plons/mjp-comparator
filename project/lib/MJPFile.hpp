@@ -30,7 +30,10 @@ public:
 	MJPFile(const boost::filesystem::path& file, const ConvertLineFunction& convert);
 
 	uint getNrEntries() const;
+	std::vector<MJPEntry> getAllEntries() const;
 	bool containsKey(const MJPEntryKey& key) const;
+	const MJPEntry& getEntry(const MJPEntryKey& key) const;
+
 	void printOn(std::ostream& ws) const;
 
 //testing:
