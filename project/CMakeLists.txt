@@ -1,9 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 project(csvcomparator)
 
+
+get_filename_component(PROJECT_DATA_DIR "${PROJECT_SOURCE_DIR}/../data" ABSOLUTE)
+
 add_definitions(-std=c++11)
 add_definitions(-Wall)
 add_definitions(-Werror)
+add_definitions(-DPROJECT_DIR="${PROJECT_SOURCE_DIR}")
+add_definitions(-DDATA_DIR="${PROJECT_DATA_DIR}")
 
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
