@@ -14,7 +14,6 @@ using std::ifstream;
 using std::istream;
 using std::ostream;
 using std::string;
-using std::shared_ptr;
 using std::vector;
 
 MJPFile::MJPFile(const path& file, const ConvertLineFunction& convert) :
@@ -51,7 +50,7 @@ vector<MJPEntry> MJPFile::getAllEntries() const
 	vector<MJPEntry> allEntries;
 	for (auto& entry : entries)
 	{
-		allEntries.push_back(*entry.second);
+		allEntries.push_back(entry.second);
 	}
 	return allEntries;
 }
@@ -65,7 +64,7 @@ const MJPEntry& MJPFile::getEntry(const MJPEntryKey& key) const
 {
 	auto iter = entries.find(key);
 	if (iter == entries.end()) throw std::runtime_error((format("Could not return entry for key %s")%key).str());
-	return *iter->second;
+	return iter->second;
 }
 
 void MJPFile::init(istream& input, const ConvertLineFunction& convert)
@@ -76,14 +75,14 @@ void MJPFile::init(istream& input, const ConvertLineFunction& convert)
 		{
 			if (lineNumber++ > 0)
 			{
-				shared_ptr<MJPEntry> entry = convert(line);
-				if (containsKey(entry->getKey()))
+				MJPEntry entry = convert(line);
+				if (containsKey(entry.getKey()))
 				{
-					entries[entry->getKey()]->updateAmounts(entry->getAmounts());
+					entries.at(entry.getKey()).updateAmounts(entry.getAmounts());
 				}
 				else
 				{
-					entries[entry->getKey()] = entry;
+					entries.insert(std::make_pair(entry.getKey(), entry));
 				}
 			}
 		}
@@ -99,7 +98,7 @@ void MJPFile::printOn(std::ostream& ws) const
 {
 	for (auto& entry : entries)
 	{
-		auto amounts = entry.second->getAmounts();
+		auto& amounts = entry.second.getAmounts();
 		ws << entry.first << " ";
 		std::copy(amounts.begin(), amounts.end(), std::ostream_iterator<double>(ws, " "));
 		ws << "\n";

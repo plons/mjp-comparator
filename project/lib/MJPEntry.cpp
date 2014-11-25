@@ -31,7 +31,7 @@ static double parseAmount(string amountString)
 	boost::algorithm::replace_all(amountString, "€", "");
 	boost::algorithm::replace_all(amountString, ",", "");
 	boost::algorithm::replace_all(amountString, " ", "");
-	if (amountString.empty()) return 0;
+	if (amountString.empty() || amountString == "-") return 0;
 	try
 	{
 		return boost::lexical_cast<double>(amountString);
@@ -42,17 +42,58 @@ static double parseAmount(string amountString)
 	}
 }
 
-MJPEntry::MJPEntry() {}
+MJPEntry MJPEntry::fromFoxBeleidFile(const std::string& line)
+{
+
+	vector<string> columns = splitLine(line, ";", 13);
+	vector<string> combinedKeyParts = splitLine(columns[0], "/", 9);
+
+
+	return MJPEntry(
+		MJPEntryKey(columns[1], columns[2], columns[3], columns[5], combinedKeyParts[8]),
+		{
+		parseAmount(columns[8]),
+		parseAmount(columns[9]),
+		parseAmount(columns[10]),
+		parseAmount(columns[11]),
+		parseAmount(columns[12])
+		}
+	);
+}
+
+MJPEntry MJPEntry::fromCustomFile(const std::string& line)
+{
+	vector<string> columns = splitLine(line, ";", 15);
+
+	return MJPEntry(
+		MJPEntryKey(columns[1], columns[3], columns[5], columns[6], columns[8]),
+		{
+				parseAmount(columns[10]),
+				parseAmount(columns[11]),
+				parseAmount(columns[12]),
+				parseAmount(columns[13]),
+				parseAmount(columns[14])
+		}
+	);
+}
+
+
+
+MJPEntry::MJPEntry(MJPEntryKey&& key, const std::initializer_list<double>& amounts) :
+		key(key),
+		amounts(amounts)
+{
+}
+
 MJPEntry::MJPEntry(const MJPEntry& other) :
-		key(new MJPEntryKey(*other.key)),
+		key(other.key),
 		amounts(other.amounts)
 {
 }
 
 const MJPEntryKey& MJPEntry::getKey() const
 {
-	assert(key);
-	return *key;
+	return key;
 }
 
 const vector<double>& MJPEntry::getAmounts() const
@@ -67,27 +108,4 @@ void MJPEntry::updateAmounts(const std::vector<double>& amountsToAdd)
 	{
 		amounts[index] += amountsToAdd[index];
 	}
-}
-
-FoxBeleidMJPEntry::FoxBeleidMJPEntry(const std::string& line)
-{
-	vector<string> columns = splitLine(line, ";", 13);
-	vector<string> combinedKeyParts = splitLine(columns[0], "/", 9);
-	key.reset(new MJPEntryKey(columns[1], columns[2], columns[3], columns[5], combinedKeyParts[8]));
-	amounts.push_back(parseAmount(columns[8]));
-	amounts.push_back(parseAmount(columns[9]));
-	amounts.push_back(parseAmount(columns[10]));
-	amounts.push_back(parseAmount(columns[11]));
-	amounts.push_back(parseAmount(columns[12]));
-}
-
-CustomMJPEntry::CustomMJPEntry(const string& line)
-{
-	vector<string> columns = splitLine(line, ";", 15);
-	key.reset(new MJPEntryKey(columns[1], columns[3], columns[5], columns[6], columns[8]));
-	amounts.push_back(parseAmount(columns[10]));
-	amounts.push_back(parseAmount(columns[11]));
-	amounts.push_back(parseAmount(columns[12]));
-	amounts.push_back(parseAmount(columns[13]));
-	amounts.push_back(parseAmount(columns[14]));
 }

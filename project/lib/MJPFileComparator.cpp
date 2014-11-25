@@ -5,8 +5,8 @@ using std::vector;
 
 
 MJPFileComparator::MJPFileComparator(const path& newFoxBeleidFile, const path& newCustomFile) :
-		foxBeleidFile(newFoxBeleidFile, convertFoxBeleidMJPLine),
-		customFile(newCustomFile, convertCustomMJPLine)
+		foxBeleidFile(newFoxBeleidFile, MJPEntry::fromFoxBeleidFile),
+		customFile(newCustomFile, MJPEntry::fromCustomFile)
 {
 	std::cout << "Comparing following files:\n";
 	std::cout << "\tFoxbeleid file: " << foxBeleidFile.getPath() << " containing " << foxBeleidFile.getAllEntries().size() << " entries." << std::endl;

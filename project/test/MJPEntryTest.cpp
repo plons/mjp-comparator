@@ -22,7 +22,7 @@ public:
 
 TEST_F(LineFromFoxBeleidMJPFile, canBeParsed)
 {
-	FoxBeleidMJPEntry entry{line};
+	auto entry = MJPEntry::fromFoxBeleidFile(line);
 
 	ASSERT_THAT(entry.getKey(), Eq(expectedKey));
 	ASSERT_THAT(entry.getAmounts(), Eq(expectedAmounts));
@@ -48,7 +48,7 @@ public:
 
 TEST_F(LineFromCustomMJPFile, canParseKey)
 {
-	CustomMJPEntry entry{line};
+	auto entry = MJPEntry::fromCustomFile(line);
 
 	ASSERT_THAT(entry.getKey(), Eq(expectedKey));
 	ASSERT_THAT(entry.getAmounts(), Eq(expectedAmounts));

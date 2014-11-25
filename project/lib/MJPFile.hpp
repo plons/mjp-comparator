@@ -7,9 +7,6 @@
 #include <map>
 #include <memory>
 
-auto convertFoxBeleidMJPLine = [](const std::string& line){return std::make_shared<FoxBeleidMJPEntry>(line);};
-auto convertCustomMJPLine    = [](const std::string& line){return std::make_shared<CustomMJPEntry>(line);};
-
 /*
  * KEY:
  *  Actie (vb 0.3.0.0 of GBB-CBS),
@@ -25,7 +22,7 @@ auto convertCustomMJPLine    = [](const std::string& line){return std::make_shar
 class MJPFile
 {
 public:
-	using ConvertLineFunction = std::function<std::shared_ptr<MJPEntry> (const std::string&)>;
+	using ConvertLineFunction = std::function<MJPEntry (const std::string&)>;
 
 	MJPFile(const boost::filesystem::path& file, const ConvertLineFunction& convert);
 
@@ -44,7 +41,7 @@ private:
 	void init(std::istream& input, const ConvertLineFunction& convert);
 
 	boost::filesystem::path file;
-	std::map<MJPEntryKey, std::shared_ptr<MJPEntry>> entries;
+	std::map<MJPEntryKey, MJPEntry> entries;
 };
 
 std::ostream& operator<<(std::ostream& ws, const MJPFile& file);

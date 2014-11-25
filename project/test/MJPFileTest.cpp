@@ -20,7 +20,7 @@ public:
 		content << "BP2014_2019-1/0.3.0.0/0030-00/0901000/BESTUUR/CBS/600/IE-GEEN/U;0.3.0.0;0030-00;901000;600;IE-GEEN;Bestemde gelden voor exploitatie-uitgaven;€ 0.00;;;;;" << "\n";
 		content << "BP2014_2019-1/1.1.1.2/0701-00/6143007/BESTUUR/CBS/600/IE-GEEN/U;1.1.1.2;0701-00;6143007;600;IE-GEEN;Publiciteit, advertenties & info;€ 800.00;€ 800.00;€ 800.00;€ 800.00;€ 800.00;€ 800.00" << "\n";
 		content << "BP2014_2019-1/1.1.1.3/0119-00/6143007/BESTUUR/CBS/600/IE-GEEN/U;1.1.1.3;0119-00;6143007;600;IE-GEEN;Publiciteit, advertenties & info;€ 26,000.00;€ 33,000.00;€ 33,000.00;€ 33,000.00;€ 33,000.00;€ 33,000.00" << "\n";
-		foxBeleidMJPFile.reset(new MJPFile(content, convertFoxBeleidMJPLine));
+		foxBeleidMJPFile.reset(new MJPFile(content, MJPEntry::fromFoxBeleidFile));
 	}
 
 	std::stringstream content;
@@ -49,7 +49,7 @@ public:
 		content << "BP2014_2019-0/GBB-CBS/0030-00/6570001/BESTUUR/CBS/700/IE-GEEN/U;GBB-CBS;Gelijkblijvend beleid CBS;0030-00;Financiële aangelegenheden;6570001;IE-GEEN;Debetintresten bankrekeningen;U;€ 100.00;€ 100.00;€ 100.00;€ 100.00;€ 100.00;€ 100.00;;te bespreken;;;" << "\n";
 		content << "BP2014_2019-0/GBB-CBS/0040-00/6500000/BESTUUR/CBS/700/IE-GEEN/U;GBB-CBS;Gelijkblijvend beleid CBS;0040-00;Transacties in verband met de openbare schuld;6500000;IE-GEEN;Intresten op leningen;U;€ 344,119.60;€ 440,466.49;€ 491,708.03;€ 507,578.12;€ 532,510.77;€ 509,588.53;;;;;" << "\n";
 		content << "BP2014_2019-0/GBB-CBS/0040-00/6500100/BESTUUR/CBS/700/IE-GEEN/U;GBB-CBS;Gelijkblijvend beleid CBS;0040-00;Transacties in verband met de openbare schuld;6500100;IE-GEEN;FinanciÃ«le kosten leasingschulden;U;€ 0.00;€ 0.00;€ 0.00;€ 0.00;€ 0.00;€ 0.00;;;;;" << "\n";
-		customMJPFile.reset(new MJPFile(content, convertCustomMJPLine));
+		customMJPFile.reset(new MJPFile(content, MJPEntry::fromCustomFile));
 	}
 
 	std::stringstream content;
