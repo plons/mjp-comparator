@@ -8,12 +8,13 @@
 
 using boost::algorithm::starts_with;
 using boost::algorithm::trim_copy;
+using boost::algorithm::to_upper_copy;
 using boost::format;
 using boost::regex_match;
 using boost::regex;
 
 MJPEntryKey::MJPEntryKey(const std::string& actie, const std::string& beleidsItem, const std::string& algemeneRekening, const std::string& investeringsEnveloppe, const std::string& kasStroom) :
-		actie(trim_copy(actie)),
+		actie(to_upper_copy(trim_copy(actie))),
 		beleidsItem(trim_copy(beleidsItem)),
 		algemeneRekening(trim_copy(algemeneRekening)),
 		investeringsEnveloppe(trim_copy(investeringsEnveloppe)),
