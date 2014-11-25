@@ -2,11 +2,13 @@
 
 #include "FileUtilities.hpp"
 
+#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 
 #include <fstream>
 
 using boost::filesystem::path;
+using boost::filesystem::exists;
 using boost::format;
 using std::ifstream;
 using std::istream;
@@ -15,8 +17,13 @@ using std::string;
 using std::shared_ptr;
 using std::vector;
 
-MJPFile::MJPFile(const path& file, const ConvertLineFunction& convert)
+MJPFile::MJPFile(const path& file, const ConvertLineFunction& convert) :
+		file(file)
 {
+	if (!exists(file))
+	{
+		throw std::invalid_argument((format("The given file %s does not exist!")%file).str());
+	}
 	ifstream input(file.string());
 	try
 	{

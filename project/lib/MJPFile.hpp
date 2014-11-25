@@ -29,6 +29,7 @@ public:
 
 	MJPFile(const boost::filesystem::path& file, const ConvertLineFunction& convert);
 
+	const boost::filesystem::path& getPath() const {return file;}
 	uint getNrEntries() const;
 	std::vector<MJPEntry> getAllEntries() const;
 	bool containsKey(const MJPEntryKey& key) const;
@@ -42,6 +43,7 @@ public:
 private:
 	void init(std::istream& input, const ConvertLineFunction& convert);
 
+	boost::filesystem::path file;
 	std::map<MJPEntryKey, std::shared_ptr<MJPEntry>> entries;
 };
 
