@@ -45,18 +45,18 @@ static double parseAmount(string amountString)
 MJPEntry MJPEntry::fromFoxBeleidFile(const std::string& line)
 {
 
-	vector<string> columns = splitLine(line, ";", 13);
-	vector<string> combinedKeyParts = splitLine(columns[0], "/", 9);
+	vector<string> columns = splitLine(line, ";", 12);
+	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
 
 
 	return MJPEntry(
-		MJPEntryKey(columns[1], columns[2], columns[3], columns[5], combinedKeyParts[8]),
+		MJPEntryKey(columns[1], columns[2], columns[3], columns[4], combinedKeyParts[7]),
 		{
+		parseAmount(columns[7]),
 		parseAmount(columns[8]),
 		parseAmount(columns[9]),
 		parseAmount(columns[10]),
-		parseAmount(columns[11]),
-		parseAmount(columns[12])
+		parseAmount(columns[11])
 		}
 	);
 }

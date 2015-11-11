@@ -7,11 +7,11 @@ using namespace testing;
 class LineFromFoxBeleidMJPFile : public Test
 {
 public:
-	std::string line{"BP2014_2019-1/2.1.1.1/0909-00/6494000/BESTUUR/CBS/420/IE-GEEN/U"
+	std::string line{
+			"BP2014_2019-1/2.1.1.1/0909-00/6494000/BESTUUR/CBS/IE-GEEN/U"
 			";2.1.1.1"
 			";0909-00"
 			";6494000"
-			";420"
 			";IE-GEEN"
 			";Toegestane werkingssubsidies aan andere overheidsinstellingen"
 			";€ 799,416.15;€ 917,523.45;€ 927,129.72;€ 953,644.22;€ 985,377.10;€ 1,007,216.94"};
