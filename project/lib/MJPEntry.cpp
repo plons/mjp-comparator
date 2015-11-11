@@ -29,7 +29,8 @@ static vector<string> splitLine(const std::string& line, const std::string& deli
 static double parseAmount(string amountString)
 {
 	boost::algorithm::replace_all(amountString, "€", "");
-	boost::algorithm::replace_all(amountString, ",", "");
+	boost::algorithm::replace_all(amountString, ".", "");
+	boost::algorithm::replace_all(amountString, ",", ".");
 	boost::algorithm::replace_all(amountString, " ", "");
 	if (amountString.empty() || amountString == "-") return 0;
 	try
