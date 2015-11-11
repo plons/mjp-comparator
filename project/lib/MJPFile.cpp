@@ -2,6 +2,7 @@
 
 #include "FileUtilities.hpp"
 
+#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 
@@ -73,7 +74,9 @@ void MJPFile::init(istream& input, const ConvertLineFunction& convert)
 	plons::common::FileUtilities::processLines(input, [&](const string& line){
 		try
 		{
-			if (lineNumber++ > 0)
+			if (lineNumber++ > 0
+					&& !line.empty()
+					&& !boost::algorithm::starts_with(line, ";;;;"))
 			{
 				MJPEntry entry = convert(line);
 				if (containsKey(entry.getKey()))
