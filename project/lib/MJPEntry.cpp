@@ -63,16 +63,17 @@ MJPEntry MJPEntry::fromFoxBeleidFile(const std::string& line)
 
 MJPEntry MJPEntry::fromCustomFile(const std::string& line)
 {
-	vector<string> columns = splitLine(line, ";", 15);
+	vector<string> columns = splitLine(line, ";", 14);
+	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
 
 	return MJPEntry(
-		MJPEntryKey(columns[1], columns[3], columns[5], columns[6], columns[8]),
+		MJPEntryKey(columns[1], columns[3], columns[4], columns[6], combinedKeyParts[7]),
 		{
+				parseAmount(columns[9]),
 				parseAmount(columns[10]),
 				parseAmount(columns[11]),
 				parseAmount(columns[12]),
-				parseAmount(columns[13]),
-				parseAmount(columns[14])
+				parseAmount(columns[13])
 		}
 	);
 }

@@ -31,15 +31,14 @@ TEST_F(LineFromFoxBeleidMJPFile, canBeParsed)
 class LineFromCustomMJPFile : public Test
 {
 public:
-	std::string line{"BP2014_2019-0/GBB-CBS/0020-00/6479999/BESTUUR/CBS/100/IE-GEEN/U"
+	std::string line{"BP2014_2019-0/GBB-CBS/0020-00/6479999/BESTUUR/CBS/IE-GEEN/U"
 			";GBB-CBS"
 			";Gelijkblijvend beleid CBS"
 			";0020-00"
-			";Fiscale aangelegenheden"
 			";6479999"
+			";Omschrijving van de algmeene rekening"
 			";IE-GEEN"
-			";Overige diverse operationele kosten"
-			";U"
+			";Uitgebreidere omschrijving"
 			";€ 43,118.42;€ 42,675.14;€ 43,730.91;€ 45,480.15;€ 47,299.35;€ 49,191.33;;naar boven;;;"};
 
 	MJPEntryKey expectedKey{"GBB-CBS", "0020-00", "6479999", "IE-GEEN", "U"};
