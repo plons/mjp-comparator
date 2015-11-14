@@ -33,6 +33,7 @@ static double parseAmount(string amountString)
 	boost::algorithm::replace_all(amountString, ",", ".");
 	boost::algorithm::replace_all(amountString, " ", "");
 	if (amountString.empty() || amountString == "-") return 0;
+	if (amountString == "VOLLEDIGNAARCONTRACTUELEN") return 0;
 	try
 	{
 		return boost::lexical_cast<double>(amountString);
@@ -64,17 +65,16 @@ MJPEntry MJPEntry::fromFoxBeleidFile(const std::string& line)
 
 MJPEntry MJPEntry::fromCustomFile(const std::string& line)
 {
-	vector<string> columns = splitLine(line, ";", 14);
-	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
+	vector<string> columns = splitLine(line, ";", 15);
 
 	return MJPEntry(
-		MJPEntryKey(columns[1], columns[3], columns[4], columns[6], combinedKeyParts[7]),
+		MJPEntryKey(columns[1], columns[3], columns[5], columns[7], columns[4]),
 		{
-				parseAmount(columns[9]),
 				parseAmount(columns[10]),
 				parseAmount(columns[11]),
 				parseAmount(columns[12]),
-				parseAmount(columns[13])
+				parseAmount(columns[13]),
+				parseAmount(columns[14])
 		}
 	);
 }

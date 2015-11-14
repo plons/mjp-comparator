@@ -35,6 +35,7 @@ public:
 			";GBB-CBS"
 			";Gelijkblijvend beleid CBS"
 			";0020-00"
+			";U"
 			";6479999"
 			";Omschrijving van de algmeene rekening"
 			";IE-GEEN"
