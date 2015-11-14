@@ -4,6 +4,7 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <algorithm>
 #include <vector>
 #include <stdexcept>
 
@@ -110,4 +111,9 @@ void MJPEntry::updateAmounts(const std::vector<double>& amountsToAdd)
 	{
 		amounts[index] += amountsToAdd[index];
 	}
+}
+
+double MJPEntry::totalAmount() const
+{
+	return accumulate(amounts.begin(), amounts.end(), 0);
 }

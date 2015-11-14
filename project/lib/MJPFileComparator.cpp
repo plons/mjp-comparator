@@ -6,6 +6,13 @@ using boost::optional;
 using boost::filesystem::path;
 using std::vector;
 
+namespace std {
+static std::ostream& operator<<(std::ostream& ws, const std::vector<double>& amounts)
+{
+	std::copy(amounts.begin(), amounts.end(), std::ostream_iterator<double>(ws, " "));
+	return ws;
+}
+}  // namespace std
 
 MJPFileComparator::MJPFileComparator(const path& newFoxBeleidFile, const vector<path>& customFilesPaths) :
 		foxBeleidFile(newFoxBeleidFile, MJPEntry::fromFoxBeleidFile)
@@ -22,6 +29,50 @@ MJPFileComparator::MJPFileComparator(const path& newFoxBeleidFile, const vector<
 	}
 }
 
+vector<MJPEntry> findPossibleMatches(const MJPFile& file, const MJPEntry& criteria)
+{
+	vector<MJPEntry> possibleMatches;
+	for (auto& entry : file.getAllEntries())
+	{
+		if (entry.getAmounts() == criteria.getAmounts())
+		{
+			int matchingCount = 0;
+			matchingCount += (entry.getKey().actie == criteria.getKey().actie);
+			matchingCount += (entry.getKey().beleidsItem == criteria.getKey().beleidsItem);
+			matchingCount += (entry.getKey().algemeneRekening == criteria.getKey().algemeneRekening);
+			matchingCount += (entry.getKey().investeringsEnveloppe == criteria.getKey().investeringsEnveloppe);
+
+			if (matchingCount == 3)
+			{
+				possibleMatches.push_back(entry);
+			}
+		}
+	}
+	return possibleMatches;
+}
+
+vector<MJPEntry> findPossibleMatches(const vector<MJPFile>& files, const MJPEntry& criteria)
+{
+	vector<MJPEntry> possibleMatches;
+	for (const auto& currentFile : files)
+	{
+		const auto& currentMatches = findPossibleMatches(currentFile, criteria);
+		possibleMatches.insert(possibleMatches.end(), currentMatches.begin(), currentMatches.end());
+	}
+	return possibleMatches;
+}
+
+void printPossibleMatches(const vector<MJPEntry>& possibleMatches, const MJPEntry& criteria)
+{
+	if (!possibleMatches.empty())
+	{
+		std::cout << "Found " << possibleMatches.size() << " possible matches with same amounts " << criteria.getAmounts() << ":\n";
+		for (auto& possibleMatch : possibleMatches)
+		{
+			std::cout << "\tPossible match: " << possibleMatch.getKey() << "\n";
+		}
+	}
+}
 
 void MJPFileComparator::printEntriesMissingInFoxBeleid() const
 {
@@ -33,6 +84,8 @@ void MJPFileComparator::printEntriesMissingInFoxBeleid() const
 		for (auto& entry : getEntriesMissingInFoxBeleid(customFile))
 		{
 			std::cout << "Could not find following key in foxBeleid mjp file: " << entry.getKey() << "\n";
+			auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
+			printPossibleMatches(possibleMatches, entry);
 		}
 	}
 }
@@ -45,6 +98,8 @@ void MJPFileComparator::printEntriesMissingInCustomFiles() const
 	for (auto& entry : getEntriesMissingInCustomFiles())
 	{
 		std::cout << "Could not find following key in custom mjp file: " << entry.getKey() << "\n";
+		auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
+		printPossibleMatches(possibleMatches, entry);
 	}
 }
 
@@ -54,7 +109,7 @@ vector<MJPEntry> MJPFileComparator::getEntriesMissingInFoxBeleid(const MJPFile& 
 	vector<MJPEntry> missingEntries;
 	for (auto& entry : customFile.getAllEntries())
 	{
-		if (!foxBeleidFile.containsKey(entry.getKey()))
+		if (!foxBeleidFile.containsKey(entry.getKey()) && entry.totalAmount() != 0)
 		{
 			missingEntries.push_back(entry);
 		}
@@ -97,18 +152,6 @@ vector<MJPEntry> MJPFileComparator::getEntriesMissingInCustomFiles() const
 	}
 	return missingEntries;
 }
-
-
-namespace std {
-
-static std::ostream& operator<<(std::ostream& ws, const std::vector<double>& amounts)
-{
-	std::copy(amounts.begin(), amounts.end(), std::ostream_iterator<double>(ws, " "));
-	return ws;
-}
-
-}  // namespace std
-
 
 struct MismatchingAmounts
 {

@@ -9,13 +9,11 @@ public:
 
 	void printEntriesMissingInFoxBeleid() const;
 	void printEntriesMissingInCustomFiles() const;
-
-	std::vector<MJPEntry> getEntriesMissingInCustomFiles() const;
-
 	void printMismatchingAmounts() const;
 
 private:
 	std::vector<MJPEntry> getEntriesMissingInFoxBeleid(const MJPFile& customFile) const;
+	std::vector<MJPEntry> getEntriesMissingInCustomFiles() const;
 
 	MJPFile foxBeleidFile;
 	std::vector<MJPFile> customFiles;

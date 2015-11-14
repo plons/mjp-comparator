@@ -19,6 +19,7 @@ public:
 	virtual const MJPEntryKey& getKey() const final;
 	virtual const std::vector<double>& getAmounts() const final;
 	virtual void updateAmounts(const std::vector<double>& amountsToAdd) final;
+	virtual double totalAmount() const final;
 
 private:
 	MJPEntry(MJPEntryKey&& key, const std::initializer_list<double>& amounts);

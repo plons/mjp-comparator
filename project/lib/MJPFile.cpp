@@ -76,7 +76,7 @@ void MJPFile::init(istream& input, const ConvertLineFunction& convert)
 		{
 			if (lineNumber++ > 0
 					&& !line.empty()
-					&& !boost::algorithm::starts_with(line, ";;;;"))
+					&& !boost::algorithm::starts_with(line, ";;;"))
 			{
 				MJPEntry entry = convert(line);
 				if (containsKey(entry.getKey()))
