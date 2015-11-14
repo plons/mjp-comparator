@@ -5,16 +5,20 @@
 
 class MJPFileComparator {
 public:
-	MJPFileComparator(const boost::filesystem::path& foxBeleidFile, const boost::filesystem::path& customFile);
+	MJPFileComparator(const boost::filesystem::path& foxBeleidFile, const std::vector<boost::filesystem::path>& customFiles);
 
-	std::vector<MJPEntry> getEntriesMissingInFoxBeleid() const;
-	std::vector<MJPEntry> getEntriesMissingInCustomFile() const;
+	void printEntriesMissingInFoxBeleid() const;
+	void printEntriesMissingInCustomFiles() const;
+
+	std::vector<MJPEntry> getEntriesMissingInCustomFiles() const;
 
 	void printMismatchingAmounts() const;
 
 private:
+	std::vector<MJPEntry> getEntriesMissingInFoxBeleid(const MJPFile& customFile) const;
+
 	MJPFile foxBeleidFile;
-	MJPFile customFile;
+	std::vector<MJPFile> customFiles;
 };
 
 
