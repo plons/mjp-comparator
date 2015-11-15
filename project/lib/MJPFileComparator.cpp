@@ -1,6 +1,7 @@
 #include "MJPFileComparator.h"
 
 #include <boost/optional.hpp>
+#include <iomanip>
 
 using boost::optional;
 using boost::filesystem::path;
@@ -9,6 +10,7 @@ using std::vector;
 namespace std {
 static std::ostream& operator<<(std::ostream& ws, const std::vector<double>& amounts)
 {
+	ws << std::fixed << std::setprecision(2);
 	std::copy(amounts.begin(), amounts.end(), std::ostream_iterator<double>(ws, " "));
 	return ws;
 }
@@ -66,7 +68,7 @@ void printPossibleMatches(const vector<MJPEntry>& possibleMatches, const MJPEntr
 {
 	if (!possibleMatches.empty())
 	{
-		std::cout << "Found " << possibleMatches.size() << " possible matches with same amounts " << criteria.getAmounts() << ":\n";
+		std::cout << "\tFound " << possibleMatches.size() << " possible matches with same amounts " << criteria.getAmounts() << ":\n";
 		for (auto& possibleMatch : possibleMatches)
 		{
 			std::cout << "\tPossible match: " << possibleMatch.getKey() << "\n";
@@ -78,28 +80,36 @@ void MJPFileComparator::printEntriesMissingInFoxBeleid() const
 {
 	for (auto& customFile : customFiles)
 	{
-		std::cout << "========================================================" << std::endl;
-		std::cout << "Verifying whether all entries from file " << customFile.getPath().filename() << " are present in the file from foxbeleid." << std::endl;
-		std::cout << "========================================================" << std::endl;
-		for (auto& entry : getEntriesMissingInFoxBeleid(customFile))
+		auto missingEntries = getEntriesMissingInFoxBeleid(customFile);
+		if (!missingEntries.empty())
 		{
-			std::cout << "Could not find following key in foxBeleid mjp file: " << entry.getKey() << "\n";
-			auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
-			printPossibleMatches(possibleMatches, entry);
+			std::cout << "========================================================" << std::endl;
+			std::cout << "Verifying whether all entries from file " << customFile.getPath().filename() << " are present in the file from foxbeleid." << std::endl;
+			std::cout << "========================================================" << std::endl;
+			for (auto& entry : missingEntries)
+			{
+				std::cout << "Could not find following key in foxBeleid mjp file: " << entry.getKey() << "\n";
+				auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
+				printPossibleMatches(possibleMatches, entry);
+			}
 		}
 	}
 }
 
 void MJPFileComparator::printEntriesMissingInCustomFiles() const
 {
-	std::cout << "========================================================" << std::endl;
-	std::cout << "Verifying whether all entries from file " << foxBeleidFile.getPath().filename() << " are present in the custom files." << std::endl;
-	std::cout << "========================================================" << std::endl;
-	for (auto& entry : getEntriesMissingInCustomFiles())
+	auto missingEntries = getEntriesMissingInCustomFiles();
+	if (!missingEntries.empty())
 	{
-		std::cout << "Could not find following key in custom mjp file: " << entry.getKey() << "\n";
-		auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
-		printPossibleMatches(possibleMatches, entry);
+		std::cout << "========================================================" << std::endl;
+		std::cout << "Verifying whether all entries from file " << foxBeleidFile.getPath().filename() << " are present in the custom files." << std::endl;
+		std::cout << "========================================================" << std::endl;
+		for (auto& entry : missingEntries)
+		{
+			std::cout << "Could not find following key in custom mjp file: " << entry.getKey() << "\n";
+			auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
+			printPossibleMatches(possibleMatches, entry);
+		}
 	}
 }
 
