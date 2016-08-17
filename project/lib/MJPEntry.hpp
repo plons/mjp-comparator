@@ -30,5 +30,6 @@ private:
 	std::vector<double> amounts;
 };
 
+std::ostream& operator<<(std::ostream& ws, const MJPEntry& entry);
 
 #endif

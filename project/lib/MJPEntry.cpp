@@ -5,6 +5,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
+#include <iomanip>
 #include <vector>
 #include <stdexcept>
 
@@ -142,4 +143,14 @@ void MJPEntry::updateAmounts(const std::vector<double>& amountsToAdd)
 double MJPEntry::totalAmount() const
 {
 	return accumulate(amounts.begin(), amounts.end(), 0);
+}
+
+std::ostream& operator<<(std::ostream& ws, const MJPEntry& entry)
+{
+	auto key = entry.getKey();
+	auto amounts = entry.getAmounts();
+	ws << key << ": ";
+	ws << std::fixed << std::setprecision(2);
+	std::copy(amounts.begin(), amounts.end(), std::ostream_iterator<double>(ws, " "));
+	return ws;
 }
