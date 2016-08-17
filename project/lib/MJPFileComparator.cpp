@@ -3,12 +3,14 @@
 #include <boost/optional.hpp>
 #include <iomanip>
 
+#define COMPARE_2016
+
 using boost::optional;
 using boost::filesystem::path;
 using std::vector;
 
 namespace std {
-static std::ostream& operator<<(std::ostream& ws, const std::vector<double>& amounts)
+inline std::ostream& operator<<(std::ostream& ws, const std::vector<double>& amounts)
 {
 	ws << std::fixed << std::setprecision(2);
 	std::copy(amounts.begin(), amounts.end(), std::ostream_iterator<double>(ws, " "));
@@ -17,11 +19,19 @@ static std::ostream& operator<<(std::ostream& ws, const std::vector<double>& amo
 }  // namespace std
 
 MJPFileComparator::MJPFileComparator(const path& newFoxBeleidFile, const vector<path>& customFilesPaths) :
+#ifdef COMPARE_2016
+		foxBeleidFile(newFoxBeleidFile, MJPEntry::fromFoxBeleidFile2016)
+#else
 		foxBeleidFile(newFoxBeleidFile, MJPEntry::fromFoxBeleidFile)
+#endif
 {
 	for (auto& customFilePath : customFilesPaths)
 	{
+#ifdef COMPARE_2016
+		customFiles.emplace_back(customFilePath, MJPEntry::fromCustomFile2016);
+#else
 		customFiles.emplace_back(customFilePath, MJPEntry::fromCustomFile);
+#endif
 	}
 	std::cout << "Comparing following files:\n";
 	std::cout << "\tFoxbeleid file: " << foxBeleidFile.getPath().filename() << " containing " << foxBeleidFile.getAllEntries().size() << " entries." << std::endl;
@@ -73,6 +83,10 @@ void printPossibleMatches(const vector<MJPEntry>& possibleMatches, const MJPEntr
 		{
 			std::cout << "\tPossible match: " << possibleMatch.getKey() << "\n";
 		}
+	}
+	else
+	{
+		std::cout << "\tMissing amounts: " << criteria.getAmounts() << std::endl;
 	}
 }
 
@@ -193,6 +207,12 @@ static vector<MismatchingAmounts> findMismatchingAmounts(const MJPFile& customFi
 			auto& customEntry = entry;
 			auto& foxbeleidEntry = foxBeleidFile.getEntry(entry.getKey());
 
+#ifdef COMPARE_2016
+			if (customEntry.getAmounts().size() == 1 && customEntry.getAmounts().at(0) == 0)
+			{
+				continue;
+			}
+#endif
 			if (customEntry.getAmounts() != foxbeleidEntry.getAmounts())
 			{
 				mismatchingAmounts.push_back(MismatchingAmounts(customEntry, foxbeleidEntry));

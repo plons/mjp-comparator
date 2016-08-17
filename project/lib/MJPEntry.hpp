@@ -12,6 +12,9 @@ public:
 	static MJPEntry fromFoxBeleidFile(const std::string& line);
 	static MJPEntry fromCustomFile(const std::string& line);
 
+	static MJPEntry fromFoxBeleidFile2016(const std::string& line);
+	static MJPEntry fromCustomFile2016(const std::string& line);
+
 	MJPEntry(const MJPEntry& other);
 	virtual ~MJPEntry() {}
 

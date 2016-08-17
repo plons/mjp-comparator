@@ -64,6 +64,21 @@ MJPEntry MJPEntry::fromFoxBeleidFile(const std::string& line)
 	);
 }
 
+MJPEntry MJPEntry::fromFoxBeleidFile2016(const std::string& line)
+{
+
+	vector<string> columns = splitLine(line, ";", 7);
+	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
+
+
+	return MJPEntry(
+		MJPEntryKey(columns[1], columns[2], columns[3], columns[4], combinedKeyParts[7]),
+		{
+		parseAmount(columns[6]),
+		}
+	);
+}
+
 MJPEntry MJPEntry::fromCustomFile(const std::string& line)
 {
 	vector<string> columns = splitLine(line, ";", 15);
@@ -80,6 +95,17 @@ MJPEntry MJPEntry::fromCustomFile(const std::string& line)
 	);
 }
 
+MJPEntry MJPEntry::fromCustomFile2016(const std::string& line)
+{
+	vector<string> columns = splitLine(line, ";", 18);
+
+	return MJPEntry(
+		MJPEntryKey(columns[0], columns[2], columns[5], columns[7], columns[4]),
+		{
+				parseAmount(columns[16]),
+		}
+	);
+}
 
 
 MJPEntry::MJPEntry(MJPEntryKey&& key, const std::initializer_list<double>& amounts) :

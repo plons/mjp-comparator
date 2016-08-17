@@ -53,3 +53,64 @@ TEST_F(LineFromCustomMJPFile, canParseKey)
 	ASSERT_THAT(entry.getKey(), Eq(expectedKey));
 	ASSERT_THAT(entry.getAmounts(), Eq(expectedAmounts));
 }
+
+class LineFromFoxBeleidMJPFile2016 : public Test
+{
+public:
+	std::string line{
+		"1.1.1.2/0701-00/6143007/BESTUUR/CBS/0/IE-GEEN/U"
+		";1.1.1.2"
+		";0701-00"
+		";6143007"
+		";IE-GEEN"
+		";Publiciteit, advertenties & info"
+		";€ 250,00"
+	};
+
+	MJPEntryKey expectedKey{"1.1.1.2", "0701-00", "6143007", "IE-GEEN", "U"};
+	std::vector<double> expectedAmounts{250};
+};
+
+TEST_F(LineFromFoxBeleidMJPFile2016, canBeParsed)
+{
+	auto entry = MJPEntry::fromFoxBeleidFile2016(line);
+
+	ASSERT_THAT(entry.getKey(), Eq(expectedKey));
+	ASSERT_THAT(entry.getAmounts(), Eq(expectedAmounts));
+}
+
+class LineFromCustomMJPFile2016 : public Test
+{
+public:
+	std::string line{"1.1.1.3"                               // 0  : actie
+		";Optimaliseren van het gemeentelijk infoblad"   // 1
+		";0119-00"                                       // 2  : beleidsitem
+		";Overige algemene diensten"                     // 3
+		";U"                                             // 4  : kasStroom
+		";6143007"                                       // 5  : algemene rekening
+		";Publiciteit, advertenties & info"              // 6
+		";IE-GEEN"                                       // 7  : investerings enveloppe
+		";20000"                                         // 8
+		";16001,77"                                      // 9
+		";9467,52"                                       // 10
+		";10532,48"                                      // 11
+		";-6534,25"                                      // 12
+		";-40,83 %"                                      // 13
+		";"                                              // 14
+		";-1500"                                         // 15
+		";18500"		                                 // 16 : Amount
+		";vaststelling nav rekening 2015"                // 17
+		";bekijken BW2"                                  // 18
+	};
+
+	MJPEntryKey expectedKey{"1.1.1.3", "0119-00", "6143007", "IE-GEEN", "U"};
+	std::vector<double> expectedAmounts{18500};
+};
+
+TEST_F(LineFromCustomMJPFile2016, canParseKey)
+{
+	auto entry = MJPEntry::fromCustomFile2016(line);
+
+	ASSERT_THAT(entry.getKey(), Eq(expectedKey));
+	ASSERT_THAT(entry.getAmounts(), Eq(expectedAmounts));
+}
