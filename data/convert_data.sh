@@ -2,7 +2,7 @@
 pushd `dirname $0` > /dev/null; SCRIPTPATH=`pwd`; popd > /dev/null;
 
 force_overwrite=1
-year=2016
+sub_directory=2016
 
 # Make sure we are working in the current directory
 # NOT REQUIRED ANYMORE
@@ -36,7 +36,7 @@ function clean_file() {
    sed -i "s/\x0d$//g" $file
 }
 
-for excel_file in $(find ${SCRIPTPATH}/2016 -type f -name "*.xlsx"); do
+for excel_file in $(find ${SCRIPTPATH}/${sub_directory} -type f -name "*.xlsx"); do
    dirname=$(dirname "${excel_file}")
    filename=$(basename "$excel_file" .xlsx)
    csv_file=${dirname}/${filename}.csv

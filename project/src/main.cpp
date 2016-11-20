@@ -52,14 +52,14 @@ inline void compareBudgetChange2016()
 
 inline void compareMJP2016()
 {
-	path foxBeleidMJPFile{path(DATA_DIR)/ "2016/mjp/20161120_foxbeleid_20-11-2016_10u45.csv"};
+	path foxBeleidMJPFile{path(DATA_DIR)/ "2016/mjp/foxbeleid_20-11-2016_22u45.csv"};
 	vector<path> customMJPFiles({
-		{path(DATA_DIR)/ "2016/mjp/20161120_exploitatie-ontvangsten_v2.csv"},
-		{path(DATA_DIR)/ "2016/mjp/20161120_exploitatie-uitgaven_62_(personeel)_v2.csv"},
-		{path(DATA_DIR)/ "2016/mjp/20161120_exploitatie-uitgaven_v3.csv"},
-		{path(DATA_DIR)/ "2016/mjp/20161120_investerings-ontvangsten_v2.csv"},
-		{path(DATA_DIR)/ "2016/mjp/20161120_investerings-uitgaven_v3.csv"},
-		{path(DATA_DIR)/ "2016/mjp/20161120_liquiditeiten.csv"},
+		{path(DATA_DIR)/ "2016/mjp/exploitatie-ontvangsten_v2.csv"},
+		{path(DATA_DIR)/ "2016/mjp/exploitatie-uitgaven_62_(personeel)_v2.csv"},
+		{path(DATA_DIR)/ "2016/mjp/exploitatie-uitgaven_v3.csv"},
+		{path(DATA_DIR)/ "2016/mjp/investerings-ontvangsten_v2.csv"},
+		{path(DATA_DIR)/ "2016/mjp/investerings-uitgaven_v3.csv"},
+		{path(DATA_DIR)/ "2016/mjp/liquiditeiten.csv"},
 	});
 
 	MJPFileComparator comparator(MJPEntry::MJP, 2016, foxBeleidMJPFile, customMJPFiles);
@@ -70,7 +70,7 @@ inline void compareMJP2016()
 
 int main(int argc, const char** argv)
 {
-//	std::cout << MJPFile{{path(DATA_DIR)/ "2016/mjp/20161120_exploitatie-ontvangsten_v2.csv"},MJPEntry::fromCustomFileMJP2016} << std::endl;
+//	std::cout << MJPFile{{path(DATA_DIR)/ "2016/mjp/exploitatie-ontvangsten_v2.csv"},MJPEntry::fromCustomFileMJP2016} << std::endl;
 	compareMJP2016();
 	std::cout << "Thank you, come again!" << std::endl;
 }

@@ -82,17 +82,17 @@ MJPEntry MJPEntry::fromFoxBeleidMJP2015(const string& line)
 {
 
 	vector<string> columns = splitLine(line, ";", 12);
-	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
+	vector<string> combinedKeyParts = splitLine(columns.at(0), "/", 8);
 
 
 	return MJPEntry(
-		MJPEntryKey(columns[1], columns[2], columns[3], columns[4], combinedKeyParts[7]),
+		MJPEntryKey(columns.at(1), columns.at(2), columns.at(3), columns.at(4), combinedKeyParts.at(7)),
 		{
-		parseAmount(columns[7]),
-		parseAmount(columns[8]),
-		parseAmount(columns[9]),
-		parseAmount(columns[10]),
-		parseAmount(columns[11])
+			parseAmount(columns.at(7)),
+			parseAmount(columns.at(8)),
+			parseAmount(columns.at(9)),
+			parseAmount(columns.at(10)),
+			parseAmount(columns.at(11))
 		}
 	);
 }
@@ -101,13 +101,13 @@ MJPEntry MJPEntry::fromFoxBeleidBudgetChange2016(const string& line)
 {
 
 	vector<string> columns = splitLine(line, ";", 7);
-	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
+	vector<string> combinedKeyParts = splitLine(columns.at(0), "/", 8);
 
 
 	return MJPEntry(
-		MJPEntryKey(columns[1], columns[2], columns[3], columns[4], combinedKeyParts[7]),
+		MJPEntryKey(columns.at(1), columns.at(2), columns.at(3), columns.at(4), combinedKeyParts.at(7)),
 		{
-		parseAmount(columns[6]),
+			parseAmount(columns.at(6)),
 		}
 	);
 }
@@ -115,19 +115,19 @@ MJPEntry MJPEntry::fromFoxBeleidBudgetChange2016(const string& line)
 MJPEntry MJPEntry::fromFoxBeleidMJP2016(const string& line)
 {
 
-	vector<string> columns = splitLine(line, ";", 7);
-	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
+	vector<string> columns = splitLine(line, ";", 12);
+	vector<string> combinedKeyParts = splitLine(columns.at(0), "/", 8);
 
 
 	return MJPEntry(
-		MJPEntryKey(columns[1], columns[2], columns[3], columns[4], combinedKeyParts[7]),
+		MJPEntryKey(columns.at(1), columns.at(2), columns.at(3), columns.at(4), combinedKeyParts.at(7)),
 		{
-		parseAmount(columns[6]),
-		parseAmount(columns[7]),
-		parseAmount(columns[8]),
-		parseAmount(columns[9]),
-		parseAmount(columns[10]),
-		parseAmount(columns[11])
+			parseAmount(columns.at(6), false),
+			parseAmount(columns.at(7), false),
+			parseAmount(columns.at(8), false),
+			parseAmount(columns.at(9), false),
+			parseAmount(columns.at(10), false),
+			parseAmount(columns.at(11), false)
 		}
 	);
 }
@@ -137,43 +137,43 @@ MJPEntry MJPEntry::fromCustomFileMJP2015(const string& line)
 	vector<string> columns = splitLine(line, ";", 15);
 
 	return MJPEntry(
-		MJPEntryKey(columns[1], columns[3], columns[5], columns[7], columns[4]),
+		MJPEntryKey(columns.at(1), columns.at(3), columns.at(5), columns.at(7), columns.at(4)),
 		{
-				parseAmount(columns[10]),
-				parseAmount(columns[11]),
-				parseAmount(columns[12]),
-				parseAmount(columns[13]),
-				parseAmount(columns[14])
+			parseAmount(columns.at(10)),
+			parseAmount(columns.at(11)),
+			parseAmount(columns.at(12)),
+			parseAmount(columns.at(13)),
+			parseAmount(columns.at(14))
 		}
 	);
 }
 
 MJPEntry MJPEntry::fromCustomFileBudgetChange2016(const string& line)
 {
-	vector<string> columns = splitLine(line, ";", 18);
+	vector<string> columns = splitLine(line, ";", 17);
 
 	return MJPEntry(
-		MJPEntryKey(columns[0], columns[2], columns[5], columns[7], columns[4]),
+		MJPEntryKey(columns.at(0), columns.at(2), columns.at(5), columns.at(7), columns.at(4)),
 		{
-				parseAmount(columns[16]),
+			parseAmount(columns.at(16)),
 		}
 	);
 }
 
 MJPEntry MJPEntry::fromCustomFileMJP2016(const string& line)
 {
-	vector<string> columns = splitLine(line, ";", 7);
-	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
+	vector<string> columns = splitLine(line, ";", 16);
+	vector<string> combinedKeyParts = splitLine(columns.at(0), "/", 8);
 
 	return MJPEntry(
-		MJPEntryKey(columns[1], columns[3], columns[4], columns[6], combinedKeyParts[7]),
+		MJPEntryKey(columns.at(1), columns.at(3), columns.at(4), columns.at(6), combinedKeyParts.at(7)),
 		{
-				parseAmount(columns.at(10), false),
-				parseAmount(columns.at(11), false),
-				parseAmount(columns.at(12), false),
-				parseAmount(columns.at(13), false),
-				parseAmount(columns.at(14), false),
-				parseAmount(columns.at(15), false),
+			parseAmount(columns.at(10), false),
+			parseAmount(columns.at(11), false),
+			parseAmount(columns.at(12), false),
+			parseAmount(columns.at(13), false),
+			parseAmount(columns.at(14), false),
+			parseAmount(columns.at(15), false),
 		}
 	);
 }

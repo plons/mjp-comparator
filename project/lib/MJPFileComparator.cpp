@@ -21,10 +21,10 @@ using std::setprecision;
 using std::vector;
 
 namespace std {
-inline std::ostream& operator<<(std::ostream& ws, const std::vector<double>& amounts)
+inline ostream& operator<<(ostream& ws, const vector<double>& amounts)
 {
-	ws << std::fixed << std::setprecision(2);
-	std::copy(amounts.begin(), amounts.end(), std::ostream_iterator<double>(ws, " "));
+	ws << fixed << setprecision(2);
+	copy(amounts.begin(), amounts.end(), ostream_iterator<double>(ws, " "));
 	return ws;
 }
 }  // namespace std
@@ -117,15 +117,15 @@ void printPossibleMatches(const vector<MJPEntry>& possibleMatches, const MJPEntr
 {
 	if (!possibleMatches.empty())
 	{
-		std::cout << "\tFound " << possibleMatches.size() << " possible matches with same amounts " << criteria.getAmounts() << ":\n";
+		cout << "\tFound " << possibleMatches.size() << " possible matches with same amounts " << criteria.getAmounts() << ":\n";
 		for (auto& possibleMatch : possibleMatches)
 		{
-			std::cout << "\tPossible match: " << possibleMatch.getKey() << "\n";
+			cout << "\tPossible match: " << possibleMatch.getKey() << "\n";
 		}
 	}
 	else
 	{
-		std::cout << "\tMissing amounts: " << criteria.getAmounts() << std::endl;
+		cout << "\tMissing amounts: " << criteria.getAmounts() << endl;
 	}
 }
 
@@ -136,12 +136,12 @@ void MJPFileComparator::printEntriesMissingInFoxBeleid() const
 		auto missingEntries = getEntriesMissingInFoxBeleid(customFile);
 		if (!missingEntries.empty())
 		{
-			std::cout << "========================================================" << std::endl;
-			std::cout << "Verifying whether all entries from file " << customFile.getPath().filename() << " are present in the file from foxbeleid." << std::endl;
-			std::cout << "========================================================" << std::endl;
+			cout << "========================================================" << endl;
+			cout << "Verifying whether all entries from file " << customFile.getPath().filename() << " are present in the file from foxbeleid." << endl;
+			cout << "========================================================" << endl;
 			for (auto& entry : missingEntries)
 			{
-				std::cout << "Could not find following key in foxBeleid mjp file: " << entry.getKey() << "\n";
+				cout << "Could not find following key in foxBeleid mjp file: " << entry.getKey() << "\n";
 				auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
 				printPossibleMatches(possibleMatches, entry);
 			}
@@ -154,12 +154,12 @@ void MJPFileComparator::printEntriesMissingInCustomFiles() const
 	auto missingEntries = getEntriesMissingInCustomFiles();
 	if (!missingEntries.empty())
 	{
-		std::cout << "========================================================" << std::endl;
-		std::cout << "Verifying whether all entries from file " << foxBeleidFile.getPath().filename() << " are present in the custom files." << std::endl;
-		std::cout << "========================================================" << std::endl;
+		cout << "========================================================" << endl;
+		cout << "Verifying whether all entries from file " << foxBeleidFile.getPath().filename() << " are present in the custom files." << endl;
+		cout << "========================================================" << endl;
 		for (auto& entry : missingEntries)
 		{
-			std::cout << "Could not find following key in custom mjp file: " << entry.getKey() << "\n";
+			cout << "Could not find following key in custom mjp file: " << entry.getKey() << "\n";
 			auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
 			printPossibleMatches(possibleMatches, entry);
 		}
@@ -228,12 +228,26 @@ struct MismatchingAmounts
 	MJPEntry foxbeleidEntry;
 };
 
-std::ostream& operator<<(std::ostream& ws, const MismatchingAmounts& obj)
+ostream& operator<<(ostream& ws, const MismatchingAmounts& obj)
 {
 	ws << "Amounts did not match for key " << obj.customEntry.getKey() << "\n";
 	ws << "\tCustom file: " << obj.customEntry.getAmounts() << "\n";
 	ws << "\tFox beleid:  " << obj.foxbeleidEntry.getAmounts() << "\n";
 	return ws;
+}
+
+static bool amountsAreEqual(const vector<double>& list1, const vector<double>& list2)
+{
+	if (list1.size() != list2.size()) return false;
+
+	for (auto i = 0U; i < list1.size(); ++i)
+	{
+		double amount1 = list1.at(i);
+		double amount2 = list2.at(i);
+
+		if (round(100*amount1) != round(100*amount2)) return false;
+	}
+	return true;
 }
 
 static vector<MismatchingAmounts> findMismatchingAmounts(const MJPFile& customFile, const MJPFile& foxBeleidFile)
@@ -246,13 +260,7 @@ static vector<MismatchingAmounts> findMismatchingAmounts(const MJPFile& customFi
 			auto& customEntry = entry;
 			auto& foxbeleidEntry = foxBeleidFile.getEntry(entry.getKey());
 
-#ifdef COMPARE_2016
-			if (customEntry.getAmounts().size() == 1 && customEntry.getAmounts().at(0) == 0)
-			{
-				continue;
-			}
-#endif
-			if (customEntry.getAmounts() != foxbeleidEntry.getAmounts())
+			if (!amountsAreEqual(customEntry.getAmounts(), foxbeleidEntry.getAmounts()))
 			{
 				mismatchingAmounts.push_back(MismatchingAmounts(customEntry, foxbeleidEntry));
 			}
@@ -268,12 +276,12 @@ void MJPFileComparator::printMismatchingAmounts() const
 		auto mismatchingAmountsVector = findMismatchingAmounts(customFile, foxBeleidFile);
 		if (!mismatchingAmountsVector.empty())
 		{
-			std::cout << "========================================================" << std::endl;
-			std::cout << "Printing mismatching amounts from file " << customFile.getPath().filename() << std::endl;
-			std::cout << "========================================================" << std::endl;
+			cout << "========================================================" << endl;
+			cout << "Printing mismatching amounts from file " << customFile.getPath().filename() << endl;
+			cout << "========================================================" << endl;
 			for (auto& entry : mismatchingAmountsVector)
 			{
-				std::cout << entry;
+				cout << entry;
 			}
 		}
 	}
