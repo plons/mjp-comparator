@@ -29,6 +29,7 @@ public:
 	std::vector<MJPEntry> getAllEntries() const;
 	bool containsKey(const MJPEntryKey& key) const;
 	const MJPEntry& getEntry(const MJPEntryKey& key) const;
+	void removeEntry(const MJPEntryKey& key);
 
 	void printOn(std::ostream& ws) const;
 

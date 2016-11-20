@@ -3,8 +3,21 @@
 #include <boost/optional.hpp>
 #include <iomanip>
 
+#define YEAR_2016_HACK_TO_REMOVE_PERSONEL_ENTRIES_FROM_EXPENSES_FILE
+
 using boost::optional;
 using boost::filesystem::path;
+using std::all_of;
+using std::cout;
+using std::copy;
+using std::endl;
+using std::map;
+using std::ostream;
+using std::ostream_iterator;
+using std::fixed;
+using std::round;
+using std::runtime_error;
+using std::setprecision;
 using std::vector;
 
 namespace std {
@@ -23,12 +36,48 @@ MJPFileComparator::MJPFileComparator(MJPEntry::Type type, uint32_t year, const p
 	{
 		customFiles.emplace_back(customFilePath, MJPEntry::factoryFunction(MJPEntry::CUSTOM_FILE, type, year));
 	}
-	std::cout << "Comparing following files:\n";
-	std::cout << "\tFoxbeleid file: " << foxBeleidFile.getPath().filename() << " containing " << foxBeleidFile.getAllEntries().size() << " entries." << std::endl;
+	cout << "Comparing following files:\n";
+	cout << "\tFoxbeleid file: " << foxBeleidFile.getPath().filename() << " containing " << foxBeleidFile.getAllEntries().size() << " entries." << endl;
 	for (auto& customFile : customFiles)
 	{
-		std::cout << "\tCustom file: " << customFile.getPath().filename() << " containing " << customFile.getAllEntries().size() << " entries." << std::endl;
+		cout << "\tCustom file: " << customFile.getPath().filename() << " containing " << customFile.getAllEntries().size() << " entries." << endl;
 	}
+
+#ifdef YEAR_2016_HACK_TO_REMOVE_PERSONEL_ENTRIES_FROM_EXPENSES_FILE
+	MJPFile* personelFilePtr = nullptr;
+	MJPFile* expensesFilePtr = nullptr;
+	for (auto& customFile : customFiles)
+	{
+		if (customFile.getPath().filename() == "exploitatie-uitgaven_62_(personeel)_v2.csv") personelFilePtr = &customFile;
+		if (customFile.getPath().filename() == "exploitatie-uitgaven_v3.csv") expensesFilePtr = &customFile;
+	}
+
+	if (personelFilePtr != nullptr && expensesFilePtr != nullptr)
+	{
+		cout << "Detected personel file: " << personelFilePtr->getPath() << endl;
+		cout << "Detected expense file: " << expensesFilePtr->getPath() << endl;
+		auto allPersonelEntries = personelFilePtr->getAllEntries();
+		for (auto iter = allPersonelEntries.begin(); iter != allPersonelEntries.end(); ++iter)
+		{
+			if (expensesFilePtr->containsKey(iter->getKey()))
+			{
+				// Yet another workaround
+				if (iter->getKey().algemeneRekening == "6231003" && round(100*iter->getAmounts().back()) == 0)
+				{
+					personelFilePtr->removeEntry(iter->getKey());
+				}
+				else
+				{
+					expensesFilePtr->removeEntry(iter->getKey());
+				}
+			}
+		}
+	}
+	else
+	{
+		throw runtime_error("Could not detect personel file and expense file (CUSTOM PROCESSING 2016)");
+	}
+#endif
 }
 
 vector<MJPEntry> findPossibleMatches(const MJPFile& file, const MJPEntry& criteria)

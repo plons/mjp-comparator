@@ -68,6 +68,11 @@ const MJPEntry& MJPFile::getEntry(const MJPEntryKey& key) const
 	return iter->second;
 }
 
+void MJPFile::removeEntry(const MJPEntryKey& key)
+{
+	entries.erase(key);
+}
+
 void MJPFile::init(istream& input, const MJPEntry::FactoryFunction& convert)
 {
 	uint lineNumber = 0;
