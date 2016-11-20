@@ -3,7 +3,7 @@
 using boost::filesystem::path;
 using std::vector;
 
-inline void compareBudget2015Try1()
+inline void compareMJP2015Try1()
 {
 	path foxBeleidMJPFile{path(DATA_DIR)/ "2015/20151114_1056_MJP_foxbeleid.csv"};
 	vector<path> customMJPFiles({
@@ -20,7 +20,7 @@ inline void compareBudget2015Try1()
 	comparator.printMismatchingAmounts();
 }
 
-inline void compareBudget2015()
+inline void compareMJP2015()
 {
 	path foxBeleidMJPFile{path(DATA_DIR)/ "2015/20151117_2046_MJP_foxbeleid.csv"};
 	vector<path> customMJPFiles({
@@ -39,10 +39,10 @@ inline void compareBudget2015()
 
 inline void compareBudgetChange2016()
 {
-	path foxBeleidMJPFile{path(DATA_DIR)/ "2016/20160817_0740_BW1-2016_foxbeleid.csv"};
+	path foxBeleidMJPFile{path(DATA_DIR)/ "2016/budget-change/20160817_0740_BW1-2016_foxbeleid.csv"};
 	vector<path> customMJPFiles({
-		{path(DATA_DIR)/ "2016/20160817_Budgetwijziging_Ontvangsten.csv"},
-		{path(DATA_DIR)/ "2016/20160817_Budgetwijziging_Uitgaven.csv"},
+		{path(DATA_DIR)/ "2016/budget-change/20160817_Budgetwijziging_Ontvangsten.csv"},
+		{path(DATA_DIR)/ "2016/budget-change/20160817_Budgetwijziging_Uitgaven.csv"},
 	});
 
 	MJPFileComparator comparator(MJPEntry::BUDGET_CHANGE, 2016, foxBeleidMJPFile, customMJPFiles);
@@ -50,8 +50,27 @@ inline void compareBudgetChange2016()
 	comparator.printMismatchingAmounts();
 }
 
+inline void compareMJP2016()
+{
+	path foxBeleidMJPFile{path(DATA_DIR)/ "2016/mjp/20161120_foxbeleid_20-11-2016_10u45.csv"};
+	vector<path> customMJPFiles({
+		{path(DATA_DIR)/ "2016/mjp/20161120_exploitatie-ontvangsten_v2.csv"},
+		{path(DATA_DIR)/ "2016/mjp/20161120_exploitatie-uitgaven_62_(personeel)_v2.csv"},
+		{path(DATA_DIR)/ "2016/mjp/20161120_exploitatie-uitgaven_v3.csv"},
+		{path(DATA_DIR)/ "2016/mjp/20161120_investerings-ontvangsten_v2.csv"},
+		{path(DATA_DIR)/ "2016/mjp/20161120_investerings-uitgaven_v3.csv"},
+		{path(DATA_DIR)/ "2016/mjp/20161120_liquiditeiten.csv"},
+	});
+
+	MJPFileComparator comparator(MJPEntry::MJP, 2016, foxBeleidMJPFile, customMJPFiles);
+	comparator.printEntriesMissingInFoxBeleid();
+	comparator.printMismatchingAmounts();
+}
+
+
 int main(int argc, const char** argv)
 {
-	compareBudgetChange2016();
+//	std::cout << MJPFile{{path(DATA_DIR)/ "2016/mjp/20161120_exploitatie-ontvangsten_v2.csv"},MJPEntry::fromCustomFileMJP2016} << std::endl;
+	compareMJP2016();
 	std::cout << "Thank you, come again!" << std::endl;
 }
