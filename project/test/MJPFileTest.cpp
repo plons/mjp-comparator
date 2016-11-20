@@ -60,6 +60,7 @@ public:
 		content << "BP2014_2019-2T/4.3.2.1/0729-00/7010003/BESTUUR/CBS/IE-GEEN/O;4.3.2.1;Stimuleren en ondersteunen van erfgoedparticipatie;0729-00;O;7010003;Toegangsgelden;IE-GEEN;Toegangsgelden;€ 1 425,00;;;;;;;;;;;;;;;" << "\n";
 		content << "BP2014_2019-2T/GBB-CBS/0010-00/7400000/BESTUUR/CBS/IE-GEEN/O;GBB-CBS;Gelijkblijvend beleid CBS;0010-00;O;7400000;Gemeentefonds;IE-GEEN;Gemeentefonds;€ 1 235 762,40;€ 1 304 696,80;€ 1 642 444,53;€ 1 689 110,13;€ 1 737 408,53;€ 1 787 397,33;;;;;;;;;;" << "\n";
 		content << "BP2014_2019-2T/GBB-CBS/0010-00/7404999/BESTUUR/CBS/IE-GEEN/O;GBB-CBS;Gelijkblijvend beleid CBS;0010-00;O;7404999;Overige algemene werkingssubsidies;IE-GEEN;Overige algemene werkingssubsidies;€ 117 207,67;€ 117 207,67;€ 117 207,67;€ 117 207,67;€ 117 207,67;€ 117 207,67;ok;;;;;;;;;" << "\n";
+		content << "BP2014_2019-2T/GBR-VBJ/0010-00/7404999/BESTUUR/CBS/IE-GEEN/O;GBR-VBJ;Gelijkblijvend beleid CBS;0010-00;O;7404999;Overige algemene werkingssubsidies;IE-GEEN;Overige algemene werkingssubsidies;€ 117 207,67;€ 117 207,67;€ 117 207,67;€ 117 207,67;€ 117 207,67;€ 117 207,67;ok;;;;;;;;;" << "\n";
 		customMJPFile.reset(new MJPFile(content, MJPEntry::fromCustomFileMJP2015));
 	}
 
@@ -67,6 +68,12 @@ public:
 	uint expectedNrEntries{10};
 	std::unique_ptr<MJPFile> customMJPFile;
 };
+
+TEST_F(CustomMJPExample, ignoresCumulatedResultOfPreviousBookingYear)
+{
+	// action GBR-VBJ => cumulated result of previous booking year => should be ignoreld!
+	ASSERT_FALSE(customMJPFile->containsKey(MJPEntryKey("GBR-VBJ", "0010-00", "7404999", "IE-GEEN", "O")));
+}
 
 TEST_F(CustomMJPExample, parsesExpectedNumberOfEntries)
 {
@@ -77,4 +84,3 @@ TEST_F(CustomMJPExample, canFindEntryByKey)
 {
 	ASSERT_TRUE(customMJPFile->containsKey(MJPEntryKey("GBB-CBS", "0010-00", "7400000", "IE-GEEN", "O")));
 }
-

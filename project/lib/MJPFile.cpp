@@ -79,6 +79,8 @@ void MJPFile::init(istream& input, const MJPEntry::FactoryFunction& convert)
 					&& !boost::algorithm::starts_with(line, ";;;"))
 			{
 				MJPEntry entry = convert(line);
+				if (entry.getKey().actie == "GBR-VBJ") return;
+
 				if (containsKey(entry.getKey()))
 				{
 					entries.at(entry.getKey()).updateAmounts(entry.getAmounts());

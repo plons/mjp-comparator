@@ -44,7 +44,9 @@ bool MJPEntryKey::operator<(const MJPEntryKey& other) const
 
 void MJPEntryKey::checkValues() const
 {
-	if (actie != "GBB-CBS" && !regex_match(actie, regex("\\d+\\.\\d+\\.\\d+\\.\\d+")))
+	if (!regex_match(actie, regex("\\d+\\.\\d+\\.\\d+\\.\\d+"))
+			&& actie != "GBB-CBS"
+			&& actie != "GBR-VBJ")
 	{
 		throw std::invalid_argument((format("Het opgegeven veld '%s' komt niet overeen met de verwachte waarde voor een actie.")%actie).str());
 	}
