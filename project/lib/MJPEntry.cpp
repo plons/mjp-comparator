@@ -6,17 +6,23 @@
 
 #include <algorithm>
 #include <iomanip>
-#include <vector>
+#include <map>
 #include <stdexcept>
+#include <tuple>
+#include <vector>
 
 using boost::algorithm::split;
 using boost::format;
 
 using std::invalid_argument;
+using std::map;
+using std::make_tuple;
+using std::runtime_error;
 using std::string;
+using std::tuple;
 using std::vector;
 
-static vector<string> splitLine(const std::string& line, const std::string& delimiter, uint minimumNrOfFields)
+static vector<string> splitLine(const string& line, const string& delimiter, uint minimumNrOfFields)
 {
 	vector<string> results;
 	boost::algorithm::split(results, line, boost::is_any_of(delimiter));
@@ -28,11 +34,14 @@ static vector<string> splitLine(const std::string& line, const std::string& deli
 	return results;
 }
 
-static double parseAmount(string amountString)
+static double parseAmount(string amountString, bool usesCommaAsdecimalSeperator = true)
 {
 	boost::algorithm::replace_all(amountString, "€", "");
-	boost::algorithm::replace_all(amountString, ".", "");
-	boost::algorithm::replace_all(amountString, ",", ".");
+	if (usesCommaAsdecimalSeperator)
+	{
+		boost::algorithm::replace_all(amountString, ".", "");
+		boost::algorithm::replace_all(amountString, ",", ".");
+	}
 	boost::algorithm::replace_all(amountString, " ", "");
 	if (amountString.empty() || amountString == "-") return 0;
 	if (amountString == "VOLLEDIGNAARCONTRACTUELEN") return 0;
@@ -46,7 +55,30 @@ static double parseAmount(string amountString)
 	}
 }
 
-MJPEntry MJPEntry::fromFoxBeleidFile(const std::string& line)
+MJPEntry::FactoryFunction MJPEntry::factoryFunction(MJPEntry::Source source, MJPEntry::Type type, uint32_t year)
+{
+	using Key = tuple<MJPEntry::Source, MJPEntry::Type, uint32_t>;
+	static map<Key,FactoryFunction> factoryFunctions{
+		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::MJP, 2015), &MJPEntry::fromFoxBeleidMJP2015},
+		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::BUDGET_CHANGE, 2016), &MJPEntry::fromFoxBeleidBudgetChange2016},
+		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::MJP, 2016), &MJPEntry::fromFoxBeleidMJP2016},
+		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2015), &MJPEntry::fromCustomFileMJP2015},
+		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::BUDGET_CHANGE, 2016), &MJPEntry::fromCustomFileBudgetChange2016},
+		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2016), &MJPEntry::fromCustomFileMJP2016},
+	};
+
+	auto iter = factoryFunctions.find(std::make_tuple(source, type, year));
+	if (iter != factoryFunctions.end())
+	{
+		return iter->second;
+	}
+	else
+	{
+		throw runtime_error((format("Could not find factory function for MJPEntry from (Source=%d, type=%d year=%d)")%source %type %year).str());
+	}
+}
+
+MJPEntry MJPEntry::fromFoxBeleidMJP2015(const string& line)
 {
 
 	vector<string> columns = splitLine(line, ";", 12);
@@ -65,7 +97,7 @@ MJPEntry MJPEntry::fromFoxBeleidFile(const std::string& line)
 	);
 }
 
-MJPEntry MJPEntry::fromFoxBeleidFile2016(const std::string& line)
+MJPEntry MJPEntry::fromFoxBeleidBudgetChange2016(const string& line)
 {
 
 	vector<string> columns = splitLine(line, ";", 7);
@@ -80,7 +112,27 @@ MJPEntry MJPEntry::fromFoxBeleidFile2016(const std::string& line)
 	);
 }
 
-MJPEntry MJPEntry::fromCustomFile(const std::string& line)
+MJPEntry MJPEntry::fromFoxBeleidMJP2016(const string& line)
+{
+
+	vector<string> columns = splitLine(line, ";", 7);
+	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
+
+
+	return MJPEntry(
+		MJPEntryKey(columns[1], columns[2], columns[3], columns[4], combinedKeyParts[7]),
+		{
+		parseAmount(columns[6]),
+		parseAmount(columns[7]),
+		parseAmount(columns[8]),
+		parseAmount(columns[9]),
+		parseAmount(columns[10]),
+		parseAmount(columns[11])
+		}
+	);
+}
+
+MJPEntry MJPEntry::fromCustomFileMJP2015(const string& line)
 {
 	vector<string> columns = splitLine(line, ";", 15);
 
@@ -96,7 +148,7 @@ MJPEntry MJPEntry::fromCustomFile(const std::string& line)
 	);
 }
 
-MJPEntry MJPEntry::fromCustomFile2016(const std::string& line)
+MJPEntry MJPEntry::fromCustomFileBudgetChange2016(const string& line)
 {
 	vector<string> columns = splitLine(line, ";", 18);
 
@@ -104,6 +156,24 @@ MJPEntry MJPEntry::fromCustomFile2016(const std::string& line)
 		MJPEntryKey(columns[0], columns[2], columns[5], columns[7], columns[4]),
 		{
 				parseAmount(columns[16]),
+		}
+	);
+}
+
+MJPEntry MJPEntry::fromCustomFileMJP2016(const string& line)
+{
+	vector<string> columns = splitLine(line, ";", 7);
+	vector<string> combinedKeyParts = splitLine(columns[0], "/", 8);
+
+	return MJPEntry(
+		MJPEntryKey(columns[1], columns[3], columns[4], columns[6], combinedKeyParts[7]),
+		{
+				parseAmount(columns.at(10), false),
+				parseAmount(columns.at(11), false),
+				parseAmount(columns.at(12), false),
+				parseAmount(columns.at(13), false),
+				parseAmount(columns.at(14), false),
+				parseAmount(columns.at(15), false),
 		}
 	);
 }

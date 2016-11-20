@@ -14,7 +14,7 @@ inline void compareBudget2015Try1()
 		{path(DATA_DIR)/ "2015/20151114_1056_MJP_liquiditeiten-uitgaven+ontvangsten_v4.csv"},
 	});
 
-	MJPFileComparator comparator(foxBeleidMJPFile, customMJPFiles);
+	MJPFileComparator comparator(MJPEntry::MJP, 2015, foxBeleidMJPFile, customMJPFiles);
 	comparator.printEntriesMissingInFoxBeleid();
 	comparator.printEntriesMissingInCustomFiles();
 	comparator.printMismatchingAmounts();
@@ -31,13 +31,13 @@ inline void compareBudget2015()
 		{path(DATA_DIR)/ "2015/20151117_2046_MJP_liquiditeiten-uitgaven+ontvangsten_v5.csv"},
 	});
 
-	MJPFileComparator comparator(foxBeleidMJPFile, customMJPFiles);
+	MJPFileComparator comparator(MJPEntry::MJP, 2015, foxBeleidMJPFile, customMJPFiles);
 	comparator.printEntriesMissingInFoxBeleid();
 	comparator.printEntriesMissingInCustomFiles();
 	comparator.printMismatchingAmounts();
 }
 
-inline void compareBudget2016()
+inline void compareBudgetChange2016()
 {
 	path foxBeleidMJPFile{path(DATA_DIR)/ "2016/20160817_0740_BW1-2016_foxbeleid.csv"};
 	vector<path> customMJPFiles({
@@ -45,13 +45,13 @@ inline void compareBudget2016()
 		{path(DATA_DIR)/ "2016/20160817_Budgetwijziging_Uitgaven.csv"},
 	});
 
-	MJPFileComparator comparator(foxBeleidMJPFile, customMJPFiles);
+	MJPFileComparator comparator(MJPEntry::BUDGET_CHANGE, 2016, foxBeleidMJPFile, customMJPFiles);
 	comparator.printEntriesMissingInFoxBeleid();
 	comparator.printMismatchingAmounts();
 }
 
 int main(int argc, const char** argv)
 {
-	compareBudget2016();
+	compareBudgetChange2016();
 	std::cout << "Thank you, come again!" << std::endl;
 }

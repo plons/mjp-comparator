@@ -22,9 +22,7 @@
 class MJPFile
 {
 public:
-	using ConvertLineFunction = std::function<MJPEntry (const std::string&)>;
-
-	MJPFile(const boost::filesystem::path& file, const ConvertLineFunction& convert);
+	MJPFile(const boost::filesystem::path& file, const MJPEntry::FactoryFunction& convert);
 
 	const boost::filesystem::path& getPath() const {return file;}
 	uint getNrEntries() const;
@@ -35,10 +33,10 @@ public:
 	void printOn(std::ostream& ws) const;
 
 //testing:
-	MJPFile(std::istream& input, const ConvertLineFunction& convert);
+	MJPFile(std::istream& input, const MJPEntry::FactoryFunction& convert);
 
 private:
-	void init(std::istream& input, const ConvertLineFunction& convert);
+	void init(std::istream& input, const MJPEntry::FactoryFunction& convert);
 
 	boost::filesystem::path file;
 	std::map<MJPEntryKey, MJPEntry> entries;

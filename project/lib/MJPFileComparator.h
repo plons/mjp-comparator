@@ -5,7 +5,7 @@
 
 class MJPFileComparator {
 public:
-	MJPFileComparator(const boost::filesystem::path& foxBeleidFile, const std::vector<boost::filesystem::path>& customFiles);
+	MJPFileComparator(MJPEntry::Type type, uint32_t year, const boost::filesystem::path& foxBeleidFile, const std::vector<boost::filesystem::path>& customFiles);
 
 	void printEntriesMissingInFoxBeleid() const;
 	void printEntriesMissingInCustomFiles() const;

@@ -17,7 +17,7 @@ using std::ostream;
 using std::string;
 using std::vector;
 
-MJPFile::MJPFile(const path& file, const ConvertLineFunction& convert) :
+MJPFile::MJPFile(const path& file, const MJPEntry::FactoryFunction& convert) :
 		file(file)
 {
 	if (!exists(file))
@@ -36,7 +36,7 @@ MJPFile::MJPFile(const path& file, const ConvertLineFunction& convert) :
 	}
 }
 
-MJPFile::MJPFile(istream& input, const ConvertLineFunction& convert)
+MJPFile::MJPFile(istream& input, const MJPEntry::FactoryFunction& convert)
 {
 	init(input, convert);
 }
@@ -68,7 +68,7 @@ const MJPEntry& MJPFile::getEntry(const MJPEntryKey& key) const
 	return iter->second;
 }
 
-void MJPFile::init(istream& input, const ConvertLineFunction& convert)
+void MJPFile::init(istream& input, const MJPEntry::FactoryFunction& convert)
 {
 	uint lineNumber = 0;
 	plons::common::FileUtilities::processLines(input, [&](const string& line){

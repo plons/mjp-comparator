@@ -3,8 +3,6 @@
 #include <boost/optional.hpp>
 #include <iomanip>
 
-#define COMPARE_2016
-
 using boost::optional;
 using boost::filesystem::path;
 using std::vector;
@@ -18,20 +16,12 @@ inline std::ostream& operator<<(std::ostream& ws, const std::vector<double>& amo
 }
 }  // namespace std
 
-MJPFileComparator::MJPFileComparator(const path& newFoxBeleidFile, const vector<path>& customFilesPaths) :
-#ifdef COMPARE_2016
-		foxBeleidFile(newFoxBeleidFile, MJPEntry::fromFoxBeleidFile2016)
-#else
-		foxBeleidFile(newFoxBeleidFile, MJPEntry::fromFoxBeleidFile)
-#endif
+MJPFileComparator::MJPFileComparator(MJPEntry::Type type, uint32_t year, const path& newFoxBeleidFile, const vector<path>& customFilesPaths) :
+		foxBeleidFile(newFoxBeleidFile, MJPEntry::factoryFunction(MJPEntry::FOXBELEID, type, year))
 {
 	for (auto& customFilePath : customFilesPaths)
 	{
-#ifdef COMPARE_2016
-		customFiles.emplace_back(customFilePath, MJPEntry::fromCustomFile2016);
-#else
-		customFiles.emplace_back(customFilePath, MJPEntry::fromCustomFile);
-#endif
+		customFiles.emplace_back(customFilePath, MJPEntry::factoryFunction(MJPEntry::CUSTOM_FILE, type, year));
 	}
 	std::cout << "Comparing following files:\n";
 	std::cout << "\tFoxbeleid file: " << foxBeleidFile.getPath().filename() << " containing " << foxBeleidFile.getAllEntries().size() << " entries." << std::endl;

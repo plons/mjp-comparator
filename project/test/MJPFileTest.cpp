@@ -26,7 +26,7 @@ public:
 		content << "BP2014_2019-2/1.1.2.1/0160-00/6493000/BESTUUR/CBS/IE-GEEN/U;1.1.2.1;0160-00;6493000;IE-GEEN;Toegestane werkingssubsidies aan verenigingen;€ 500,00;€ 500,00;€ 500,00;€ 500,00;€ 500,00;€ 500,00" << "\n";
 		content << "BP2014_2019-2/1.1.2.1/0390-00/6493000/BESTUUR/CBS/IE-GEEN/U;1.1.2.1;0390-00;6493000;IE-GEEN;Toegestane werkingssubsidies aan verenigingen;€ 250,00;€ 250,00;€ 250,00;€ 250,00;€ 250,00;€ 250,00" << "\n";
 		content << "BP2014_2019-2/1.1.2.1/0500-00/6493000/BESTUUR/CBS/IE-GEEN/U;1.1.2.1;0500-00;6493000;IE-GEEN;Subsidie middenstandsraad;;€ 250,00;€ 250,00;€ 250,00;€ 250,00;€ 250,00" << "\n";
-		foxBeleidMJPFile.reset(new MJPFile(content, MJPEntry::fromFoxBeleidFile));
+		foxBeleidMJPFile.reset(new MJPFile(content, MJPEntry::fromFoxBeleidMJP2015));
 	}
 
 	std::stringstream content;
@@ -60,7 +60,7 @@ public:
 		content << "BP2014_2019-2T/4.3.2.1/0729-00/7010003/BESTUUR/CBS/IE-GEEN/O;4.3.2.1;Stimuleren en ondersteunen van erfgoedparticipatie;0729-00;O;7010003;Toegangsgelden;IE-GEEN;Toegangsgelden;€ 1 425,00;;;;;;;;;;;;;;;" << "\n";
 		content << "BP2014_2019-2T/GBB-CBS/0010-00/7400000/BESTUUR/CBS/IE-GEEN/O;GBB-CBS;Gelijkblijvend beleid CBS;0010-00;O;7400000;Gemeentefonds;IE-GEEN;Gemeentefonds;€ 1 235 762,40;€ 1 304 696,80;€ 1 642 444,53;€ 1 689 110,13;€ 1 737 408,53;€ 1 787 397,33;;;;;;;;;;" << "\n";
 		content << "BP2014_2019-2T/GBB-CBS/0010-00/7404999/BESTUUR/CBS/IE-GEEN/O;GBB-CBS;Gelijkblijvend beleid CBS;0010-00;O;7404999;Overige algemene werkingssubsidies;IE-GEEN;Overige algemene werkingssubsidies;€ 117 207,67;€ 117 207,67;€ 117 207,67;€ 117 207,67;€ 117 207,67;€ 117 207,67;ok;;;;;;;;;" << "\n";
-		customMJPFile.reset(new MJPFile(content, MJPEntry::fromCustomFile));
+		customMJPFile.reset(new MJPFile(content, MJPEntry::fromCustomFileMJP2015));
 	}
 
 	std::stringstream content;
