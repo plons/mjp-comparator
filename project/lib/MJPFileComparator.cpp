@@ -1,5 +1,6 @@
 #include "MJPFileComparator.h"
 
+#include <boost/format.hpp>
 #include <boost/optional.hpp>
 #include <iomanip>
 
@@ -7,6 +8,7 @@
 
 using boost::optional;
 using boost::filesystem::path;
+using boost::format;
 using std::all_of;
 using std::cout;
 using std::copy;
@@ -18,6 +20,7 @@ using std::fixed;
 using std::round;
 using std::runtime_error;
 using std::setprecision;
+using std::string;
 using std::vector;
 
 namespace std {
@@ -28,6 +31,13 @@ inline ostream& operator<<(ostream& ws, const vector<double>& amounts)
 	return ws;
 }
 }  // namespace std
+
+inline void printTitle(const string& title)
+{
+	cout << "======================================================================" << endl;
+	cout << title << endl;
+	cout << "======================================================================" << endl;
+}
 
 MJPFileComparator::MJPFileComparator(MJPEntry::Type type, uint32_t year, const path& newFoxBeleidFile, const vector<path>& customFilesPaths) :
 		foxBeleidFile(newFoxBeleidFile, MJPEntry::factoryFunction(MJPEntry::FOXBELEID, type, year))
@@ -54,7 +64,7 @@ MJPFileComparator::MJPFileComparator(MJPEntry::Type type, uint32_t year, const p
 
 	if (personelFilePtr != nullptr && expensesFilePtr != nullptr)
 	{
-		cout << "Detected personel file: " << personelFilePtr->getPath() << endl;
+		cout << "Detected personnel file: " << personelFilePtr->getPath() << endl;
 		cout << "Detected expense file: " << expensesFilePtr->getPath() << endl;
 		auto allPersonelEntries = personelFilePtr->getAllEntries();
 		for (auto iter = allPersonelEntries.begin(); iter != allPersonelEntries.end(); ++iter)
@@ -131,21 +141,25 @@ void printPossibleMatches(const vector<MJPEntry>& possibleMatches, const MJPEntr
 
 void MJPFileComparator::printEntriesMissingInFoxBeleid() const
 {
+	bool allEntriesPresent = true;
 	for (auto& customFile : customFiles)
 	{
 		auto missingEntries = getEntriesMissingInFoxBeleid(customFile);
 		if (!missingEntries.empty())
 		{
-			cout << "========================================================" << endl;
-			cout << "Verifying whether all entries from file " << customFile.getPath().filename() << " are present in the file from foxbeleid." << endl;
-			cout << "========================================================" << endl;
+			printTitle((format("Verifying whether all entries from file %s are present in the file from foxbeleid.")%customFile.getPath().filename()).str());
 			for (auto& entry : missingEntries)
 			{
-				cout << "Could not find following key in foxBeleid mjp file: " << entry.getKey() << "\n";
+				allEntriesPresent = false;
+				cout << "Could not find following key in foxBeleid file: " << entry.getKey() << "\n";
 				auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
 				printPossibleMatches(possibleMatches, entry);
 			}
 		}
+	}
+	if (allEntriesPresent)
+	{
+		printTitle("All entries from the custom files are present in the foxbeleid file!");
 	}
 }
 
@@ -154,15 +168,17 @@ void MJPFileComparator::printEntriesMissingInCustomFiles() const
 	auto missingEntries = getEntriesMissingInCustomFiles();
 	if (!missingEntries.empty())
 	{
-		cout << "========================================================" << endl;
-		cout << "Verifying whether all entries from file " << foxBeleidFile.getPath().filename() << " are present in the custom files." << endl;
-		cout << "========================================================" << endl;
+		printTitle((format("Verifying whether all entries from file %s are present in the custom files.")%foxBeleidFile.getPath().filename()).str());
 		for (auto& entry : missingEntries)
 		{
 			cout << "Could not find following key in custom mjp file: " << entry.getKey() << "\n";
 			auto possibleMatches = findPossibleMatches(foxBeleidFile, entry);
 			printPossibleMatches(possibleMatches, entry);
 		}
+	}
+	else
+	{
+		printTitle("All entries from the foxbeleid file are present in the custom files!");
 	}
 }
 
@@ -276,9 +292,7 @@ void MJPFileComparator::printMismatchingAmounts() const
 		auto mismatchingAmountsVector = findMismatchingAmounts(customFile, foxBeleidFile);
 		if (!mismatchingAmountsVector.empty())
 		{
-			cout << "========================================================" << endl;
-			cout << "Printing mismatching amounts from file " << customFile.getPath().filename() << endl;
-			cout << "========================================================" << endl;
+			printTitle("Printing mismatching amounts from file " + customFile.getPath().filename().string());
 			for (auto& entry : mismatchingAmountsVector)
 			{
 				cout << entry;

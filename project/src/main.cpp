@@ -52,7 +52,7 @@ inline void compareBudgetChange2016()
 
 inline void compareMJP2016()
 {
-	path foxBeleidMJPFile{path(DATA_DIR)/ "2016/mjp/foxbeleid_20-11-2016_22u45.csv"};
+	path foxBeleidMJPFile{path(DATA_DIR)/ "2016/mjp/foxbeleid_23-11-2016_21u51.csv"};
 	vector<path> customMJPFiles({
 		{path(DATA_DIR)/ "2016/mjp/exploitatie-ontvangsten_v2.csv"},
 		{path(DATA_DIR)/ "2016/mjp/exploitatie-uitgaven_62_(personeel)_v2.csv"},
@@ -64,6 +64,7 @@ inline void compareMJP2016()
 
 	MJPFileComparator comparator(MJPEntry::MJP, 2016, foxBeleidMJPFile, customMJPFiles);
 	comparator.printEntriesMissingInFoxBeleid();
+	comparator.printEntriesMissingInCustomFiles();
 	comparator.printMismatchingAmounts();
 }
 
