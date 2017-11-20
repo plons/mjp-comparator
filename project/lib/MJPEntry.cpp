@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <map>
+#include <numeric>
 #include <stdexcept>
 #include <tuple>
 #include <vector>
@@ -14,6 +15,7 @@
 using boost::algorithm::split;
 using boost::format;
 
+using std::accumulate;
 using std::invalid_argument;
 using std::map;
 using std::make_tuple;

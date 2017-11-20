@@ -1,5 +1,7 @@
 #include "MJPFileComparator.h"
 
+#include <iostream>
+
 using boost::filesystem::path;
 using std::vector;
 

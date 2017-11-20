@@ -2,12 +2,9 @@
 <projectDescription>
 	<name>csvcomparator-Source@project</name>
 	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-	</buildSpec>
-	<natures>
-	</natures>
+	<projects></projects>
+	<buildSpec></buildSpec>
+	<natures></natures>
 	<linkedResources>
 		<link>
 			<name>[Subprojects]</name>

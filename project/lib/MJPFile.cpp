@@ -7,11 +7,13 @@
 #include <boost/format.hpp>
 #include <boost/regex.hpp>
 
+#include <iostream>
 #include <fstream>
 
 using boost::filesystem::path;
 using boost::filesystem::exists;
 using boost::format;
+using std::cerr;
 using std::ifstream;
 using std::istream;
 using std::ostream;

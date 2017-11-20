@@ -2,7 +2,10 @@
 
 #include <boost/format.hpp>
 #include <boost/optional.hpp>
+
+#include <cmath>
 #include <iomanip>
+#include <iostream>
 
 #define YEAR_2016_HACK_TO_REMOVE_PERSONEL_ENTRIES_FROM_EXPENSES_FILE
 

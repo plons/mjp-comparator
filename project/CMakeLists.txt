@@ -4,7 +4,7 @@ project(csvcomparator)
 
 get_filename_component(PROJECT_DATA_DIR "${PROJECT_SOURCE_DIR}/../data" ABSOLUTE)
 
-add_definitions(-std=c++11)
+add_definitions(-std=c++14)
 add_definitions(-Wall)
 add_definitions(-Werror)
 add_definitions(-DPROJECT_DIR="${PROJECT_SOURCE_DIR}")
@@ -71,8 +71,8 @@ if (libSources)
 endif()
 target_link_libraries(test_${PROJECT_NAME}
     ${GTEST_BOTH_LIBRARIES}
-    /usr/lib/libgmock.a
-    /usr/lib/libgmock_main.a
+    /usr/local/lib/libgmock.a
+    /usr/local/lib/libgmock_main.a
     ${EXTERNAL_LIBRARIES}
 )
 
