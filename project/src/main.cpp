@@ -70,10 +70,30 @@ inline void compareMJP2016()
 	comparator.printMismatchingAmounts();
 }
 
+inline void compareMJP2017()
+{
+	//std::cout << MJPFile(path(DATA_DIR) / "2017/foxbeleid_19-11-2017_21u24.csv", MJPEntry::factoryFunction(MJPEntry::FOXBELEID, MJPEntry::MJP, 2017)) << std::endl;
+	//std::cout << MJPFile(path(DATA_DIR) / "2017/investerings-ontvangsten_v6.csv", MJPEntry::factoryFunction(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2017)) << std::endl;
+	path foxBeleidMJPFile{path(DATA_DIR)/ "2017/foxbeleid_21-11-2017_8u04.csv"};
+	vector<path> customMJPFiles({
+		{path(DATA_DIR)/ "2017/exploitatie-ontvangsten_v7-1.csv"},
+		{path(DATA_DIR)/ "2017/exploitatie-uitgaven_lonen_v2-1.csv"},
+		{path(DATA_DIR)/ "2017/exploitatie-uitgaven_v8.csv"},
+		{path(DATA_DIR)/ "2017/investerings-ontvangsten_v7-1.csv"},
+		{path(DATA_DIR)/ "2017/investerings-uitgaven_v7-2.csv"},
+		{path(DATA_DIR)/ "2017/liquiditeiten_v2.csv"},
+	});
+
+	MJPFileComparator comparator(MJPEntry::MJP, 2016, foxBeleidMJPFile, customMJPFiles);
+	comparator.printEntriesMissingInFoxBeleid();
+	comparator.printEntriesMissingInCustomFiles();
+//	comparator.printMismatchingAmounts();
+}
+
 
 int main(int argc, const char** argv)
 {
 //	std::cout << MJPFile{{path(DATA_DIR)/ "2016/mjp/exploitatie-ontvangsten_v2.csv"},MJPEntry::fromCustomFileMJP2016} << std::endl;
-	compareMJP2016();
+	compareMJP2017();
 	std::cout << "Thank you, come again!" << std::endl;
 }

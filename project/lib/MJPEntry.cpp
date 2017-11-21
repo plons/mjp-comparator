@@ -44,6 +44,10 @@ static double parseAmount(string amountString, bool usesCommaAsdecimalSeperator 
 		boost::algorithm::replace_all(amountString, ".", "");
 		boost::algorithm::replace_all(amountString, ",", ".");
 	}
+	else
+	{
+		boost::algorithm::replace_all(amountString, ",", "");
+	}
 	boost::algorithm::replace_all(amountString, " ", "");
 	if (amountString.empty() || amountString == "-") return 0;
 	if (amountString == "VOLLEDIGNAARCONTRACTUELEN") return 0;
@@ -53,7 +57,9 @@ static double parseAmount(string amountString, bool usesCommaAsdecimalSeperator 
 	}
 	catch (const boost::bad_lexical_cast& e)
 	{
-		throw std::invalid_argument((format("Could not convert the amount '%s' to a double value.")%amountString).str());
+		throw std::invalid_argument(
+				(format("Could not convert the amount '%s' to a double value. (decimalSeparator=%s)")
+						%amountString %(usesCommaAsdecimalSeperator?",":".")).str());
 	}
 }
 
@@ -64,9 +70,11 @@ MJPEntry::FactoryFunction MJPEntry::factoryFunction(MJPEntry::Source source, MJP
 		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::MJP, 2015), &MJPEntry::fromFoxBeleidMJP2015},
 		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::BUDGET_CHANGE, 2016), &MJPEntry::fromFoxBeleidBudgetChange2016},
 		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::MJP, 2016), &MJPEntry::fromFoxBeleidMJP2016},
+		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::MJP, 2017), &MJPEntry::fromFoxBeleidMJP2016},
 		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2015), &MJPEntry::fromCustomFileMJP2015},
 		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::BUDGET_CHANGE, 2016), &MJPEntry::fromCustomFileBudgetChange2016},
 		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2016), &MJPEntry::fromCustomFileMJP2016},
+		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2017), &MJPEntry::fromCustomFileMJP2016},
 	};
 
 	auto iter = factoryFunctions.find(std::make_tuple(source, type, year));

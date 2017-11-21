@@ -61,8 +61,8 @@ MJPFileComparator::MJPFileComparator(MJPEntry::Type type, uint32_t year, const p
 	MJPFile* expensesFilePtr = nullptr;
 	for (auto& customFile : customFiles)
 	{
-		if (customFile.getPath().filename() == "exploitatie-uitgaven_62_(personeel)_v2.csv") personelFilePtr = &customFile;
-		if (customFile.getPath().filename() == "exploitatie-uitgaven_v3.csv") expensesFilePtr = &customFile;
+		if (customFile.getPath().filename() == "exploitatie-uitgaven_lonen_v2-1.csv") personelFilePtr = &customFile;
+		if (customFile.getPath().filename() == "exploitatie-uitgaven_v8.csv") expensesFilePtr = &customFile;
 	}
 
 	if (personelFilePtr != nullptr && expensesFilePtr != nullptr)
@@ -202,7 +202,7 @@ vector<MJPEntry> MJPFileComparator::getEntriesMissingInFoxBeleid(const MJPFile& 
 static bool onlyFirstAmountIsNotZero(const vector<double>& amounts)
 {
 	assert(amounts.size() > 0);
-	for (uint i = 1; i < amounts.size(); ++i)
+	for (auto i = 1U; i < amounts.size(); ++i)
 	{
 		if (amounts[i] > 0) return false;
 	}
@@ -255,7 +255,7 @@ ostream& operator<<(ostream& ws, const MismatchingAmounts& obj)
 	return ws;
 }
 
-static bool amountsAreEqual(const vector<double>& list1, const vector<double>& list2)
+static bool amountsAreEqual(const vector<double>& list1, const vector<double>& list2, double allowedDifference)
 {
 	if (list1.size() != list2.size()) return false;
 
@@ -264,12 +264,15 @@ static bool amountsAreEqual(const vector<double>& list1, const vector<double>& l
 		double amount1 = list1.at(i);
 		double amount2 = list2.at(i);
 
-		if (round(100*amount1) != round(100*amount2)) return false;
+		if (std::abs(amount1 - amount2) > allowedDifference)
+		{
+			return false;
+		}
 	}
 	return true;
 }
 
-static vector<MismatchingAmounts> findMismatchingAmounts(const MJPFile& customFile, const MJPFile& foxBeleidFile)
+static vector<MismatchingAmounts> findMismatchingAmounts(const MJPFile& customFile, const MJPFile& foxBeleidFile, double allowedDifference)
 {
 	vector<MismatchingAmounts> mismatchingAmounts;
 	for (auto& entry : customFile.getAllEntries())
@@ -279,7 +282,7 @@ static vector<MismatchingAmounts> findMismatchingAmounts(const MJPFile& customFi
 			auto& customEntry = entry;
 			auto& foxbeleidEntry = foxBeleidFile.getEntry(entry.getKey());
 
-			if (!amountsAreEqual(customEntry.getAmounts(), foxbeleidEntry.getAmounts()))
+			if (!amountsAreEqual(customEntry.getAmounts(), foxbeleidEntry.getAmounts(), allowedDifference))
 			{
 				mismatchingAmounts.push_back(MismatchingAmounts(customEntry, foxbeleidEntry));
 			}
@@ -292,7 +295,14 @@ void MJPFileComparator::printMismatchingAmounts() const
 {
 	for (auto& customFile : customFiles)
 	{
-		auto mismatchingAmountsVector = findMismatchingAmounts(customFile, foxBeleidFile);
+		// For 2017: The salary amounts are rounded in the bookkeeping but not in the custom files
+		double allowedDifference = 0.01;
+		if (customFile.getPath().filename() == "exploitatie-uitgaven_lonen_v2-1.csv")
+		{
+			allowedDifference = 1.5;
+		}
+
+		auto mismatchingAmountsVector = findMismatchingAmounts(customFile, foxBeleidFile, allowedDifference);
 		if (!mismatchingAmountsVector.empty())
 		{
 			printTitle("Printing mismatching amounts from file " + customFile.getPath().filename().string());
