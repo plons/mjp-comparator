@@ -5,10 +5,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
-#include <boost/regex.hpp>
 
 #include <iostream>
 #include <fstream>
+#include <regex>
 
 using boost::filesystem::path;
 using boost::filesystem::exists;
@@ -85,7 +85,7 @@ void MJPFile::init(istream& input, const MJPEntry::FactoryFunction& convert)
 			if (lineNumber++ > 0
 					&& !line.empty()
 					&& !boost::algorithm::starts_with(line, ";;;")
-					&& !boost::regex_match(line, boost::regex("[^;]+;*"))) // Ignore comment in first column
+					&& !std::regex_match(line, std::regex("[^;]+;*"))) // Ignore comment in first column
 			{
 				MJPEntry entry = convert(line);
 				if (entry.getKey().actie == "GBR-VBJ") return;

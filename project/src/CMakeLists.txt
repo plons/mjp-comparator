@@ -1,0 +1,5 @@
+file(GLOB exeSources *.cpp)
+message(STATUS "Adding executable ${PROJECT_NAME}")
+add_executable(run_${PROJECT_NAME} ${exeSources})
+target_link_libraries(run_${PROJECT_NAME} ${PROJECT_NAME})
+target_link_libraries(run_${PROJECT_NAME} ${EXTERNAL_LIBRARIES})

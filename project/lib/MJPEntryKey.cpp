@@ -2,16 +2,18 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
-#include <boost/regex.hpp>
 
+#include <regex>
 #include <stdexcept>
+
 
 using boost::algorithm::starts_with;
 using boost::algorithm::trim_copy;
 using boost::algorithm::to_upper_copy;
 using boost::format;
-using boost::regex_match;
-using boost::regex;
+using std::regex_match;
+using std::regex;
+
 
 MJPEntryKey::MJPEntryKey(const std::string& actie, const std::string& beleidsItem, const std::string& algemeneRekening, const std::string& investeringsEnveloppe, const std::string& kasStroom) :
 		actie(to_upper_copy(trim_copy(actie))),
