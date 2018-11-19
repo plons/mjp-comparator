@@ -44,7 +44,7 @@ MJPFile::MJPFile(istream& input, const MJPEntry::FactoryFunction& convert)
 	init(input, convert);
 }
 
-uint MJPFile::getNrEntries() const
+size_t MJPFile::getNrEntries() const
 {
 	return entries.size();
 }
@@ -78,8 +78,9 @@ void MJPFile::removeEntry(const MJPEntryKey& key)
 
 void MJPFile::init(istream& input, const MJPEntry::FactoryFunction& convert)
 {
-	uint lineNumber = 0;
-	plons::common::FileUtilities::processLines(input, [&](const string& line){
+	auto lineNumber = 0U;
+	plons::common::FileUtilities::processLines(input, [&](const string& line)
+	{
 		try
 		{
 			if (lineNumber++ > 0

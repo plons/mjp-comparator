@@ -71,10 +71,12 @@ MJPEntry::FactoryFunction MJPEntry::factoryFunction(MJPEntry::Source source, MJP
 		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::BUDGET_CHANGE, 2016), &MJPEntry::fromFoxBeleidBudgetChange2016},
 		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::MJP, 2016), &MJPEntry::fromFoxBeleidMJP2016},
 		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::MJP, 2017), &MJPEntry::fromFoxBeleidMJP2016},
+		{make_tuple(MJPEntry::FOXBELEID, MJPEntry::MJP, 2018), &MJPEntry::fromFoxBeleidMJP2016},
 		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2015), &MJPEntry::fromCustomFileMJP2015},
 		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::BUDGET_CHANGE, 2016), &MJPEntry::fromCustomFileBudgetChange2016},
 		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2016), &MJPEntry::fromCustomFileMJP2016},
 		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2017), &MJPEntry::fromCustomFileMJP2016},
+		{make_tuple(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2018), &MJPEntry::fromCustomFileMJP2018},
 	};
 
 	auto iter = factoryFunctions.find(std::make_tuple(source, type, year));
@@ -188,6 +190,23 @@ MJPEntry MJPEntry::fromCustomFileMJP2016(const string& line)
 	);
 }
 
+MJPEntry MJPEntry::fromCustomFileMJP2018(const string& line)
+{
+	vector<string> columns = splitLine(line, ";", 16);
+	vector<string> combinedKeyParts = splitLine(columns.at(0), "/", 8);
+
+	return MJPEntry(
+		MJPEntryKey(columns.at(1), columns.at(3), columns.at(4), columns.at(6), combinedKeyParts.at(7)),
+		{
+			parseAmount(columns.at(12), false),
+			parseAmount(columns.at(13), false),
+			parseAmount(columns.at(14), false),
+			parseAmount(columns.at(15), false),
+			parseAmount(columns.at(16), false),
+			parseAmount(columns.at(17), false),
+		}
+	);
+}
 
 MJPEntry::MJPEntry(MJPEntryKey&& key, const std::initializer_list<double>& amounts) :
 		key(key),

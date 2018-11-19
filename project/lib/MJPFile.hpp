@@ -25,7 +25,7 @@ public:
 	MJPFile(const boost::filesystem::path& file, const MJPEntry::FactoryFunction& convert);
 
 	const boost::filesystem::path& getPath() const {return file;}
-	uint getNrEntries() const;
+	size_t getNrEntries() const;
 	std::vector<MJPEntry> getAllEntries() const;
 	bool containsKey(const MJPEntryKey& key) const;
 	const MJPEntry& getEntry(const MJPEntryKey& key) const;

@@ -175,3 +175,41 @@ TEST_F(LineFromCustomFileMJP2016, canBeParsed)
 	ASSERT_THAT(entry.getAmounts(), Eq(expectedAmounts));
 }
 
+class LineFromCustomFileMJP2018 : public Test {
+public:
+	std::string line{
+		"BP2014_2023-5./3.3.3.2/0750-00/2400000/BESTUUR/CBS/IE6/U"
+		";3.3.3.2"
+		";Aankopen van speeltoestellen"
+		";0750-00"
+		";2400000"
+		";Meubilair - gemeenschapsgoederen"
+		";IE6"
+		";aankoop van speeltoestellen (inrichting speelpleinen)"
+		";2928.2"	  // 8  : Amount 2014 <- ignore!
+		";7980.85"    // 9  : Amount 2015 <- ignore!
+		";"           // 10 : Amount 2016 <- ignore!
+		";14723.09"   // 11 : Amount 2017 <- ignore!
+		";3702.6"     // 12 : Amount 2018 <- ignore!
+		";22000"      // 13 : Amount 2019 <- ignore!
+		";23000"      // 14 : Amount 2020 <- ignore!
+		";50000"      // 15 : Amount 2021 <- ignore!
+		";6000"       // 16 : Amount 2022 <- ignore!
+		";12000"      // 17 : Amount 2023 <- ignore!
+		";"
+		";142334.74"  // Totaal per project
+		";;;;;;;;"
+	};
+
+	MJPEntryKey expectedKey{"3.3.3.2", "0750-00", "2400000", "IE6", "U"};
+	std::vector<double> expectedAmounts{3702.6, 22000, 23000, 50000, 6000, 12000};
+};
+
+TEST_F(LineFromCustomFileMJP2018, canBeParsed)
+{
+	auto entry = MJPEntry::factoryFunction(MJPEntry::CUSTOM_FILE, MJPEntry::MJP, 2018)(line);
+
+	ASSERT_THAT(entry.getKey(), Eq(expectedKey));
+	ASSERT_THAT(entry.getAmounts(), Eq(expectedAmounts));
+}
+

@@ -1,8 +1,14 @@
 #!/bin/bash
 pushd `dirname $0` > /dev/null; SCRIPTPATH=`pwd`; popd > /dev/null;
 
-force_overwrite=1
-sub_directory=2016
+
+if [ $# != 1 ]; then
+   echo "Expected exactly one argument containing the name of a subdirectory (e.g. 2018). Bailing out.";
+   exit 1;
+fi
+
+force_overwrite=0
+sub_directory=$1
 
 # Make sure we are working in the current directory
 # NOT REQUIRED ANYMORE
@@ -43,6 +49,7 @@ for excel_file in $(find ${SCRIPTPATH}/${sub_directory} -type f -name "*.xlsx");
 
    excel_file_rel=$(realpath --relative-to=${SCRIPTPATH} ${excel_file})
    csv_file_rel=$(realpath --relative-to=${SCRIPTPATH} ${csv_file})
+
    if [[ -f $csv_file ]] && [[ $force_overwrite != 1 ]]; then
       echo -n "$csv_file_rel already exists. Do you want to override this file? [y/N] "
       read answer
