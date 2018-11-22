@@ -115,7 +115,7 @@ inline void compareMJP2017()
 
 inline void compareMJP2018()
 {
-	auto foxBeleidMJPFile = dataDir(2018) / "mjp/foxbeleid_21-11-2018_21u59.csv";
+	auto foxBeleidMJPFile = dataDir(2018) / "mjp/foxbeleid_latest.csv";
 	auto customMJPFiles = csvFiles(dataDir(2018) / "budget-change");
 
 	MJPFileComparator comparator(MJPEntry::MJP, 2018, foxBeleidMJPFile, customMJPFiles);
